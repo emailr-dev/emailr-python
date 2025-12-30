@@ -1,0 +1,2495 @@
+openapi: "3.0.3"
+info:
+  title: "Emailr API"
+  version: "1.0.0"
+servers:
+  - url: "https://api.emailr.dev"
+    description: "Production"
+tags:
+  - name: "emails"
+    description: "Email sending and management"
+  - name: "contacts"
+    description: "Contact management"
+  - name: "templates"
+    description: "Email template management"
+  - name: "domains"
+    description: "Domain verification and management"
+  - name: "api-keys"
+    description: "API key management"
+  - name: "webhooks"
+    description: "Webhook configuration"
+  - name: "broadcasts"
+    description: "Broadcast campaign management"
+  - name: "segments"
+    description: "Contact segmentation"
+  - name: "metrics"
+    description: "Usage and email metrics"
+  - name: "logs"
+    description: "Email event logs"
+  - name: "settings"
+    description: "Organization settings"
+components:
+  securitySchemes:
+    "bearerAuth":
+      type: "http"
+      scheme: "bearer"
+      bearerFormat: "JWT"
+      description: "API key authentication. Use your API key as the bearer token."
+  schemas:
+    "SendEmailResponse":
+      type: "object"
+      properties:
+        "success":
+          type: "boolean"
+          example: true
+        "message_id":
+          type: "string"
+          example: "123e4567-e89b-12d3-a456-426614174000"
+        "recipients":
+          type: "integer"
+          example: 1
+      required:
+        - "success"
+        - "message_id"
+        - "recipients"
+    "Error":
+      type: "object"
+      properties:
+        "error":
+          type: "string"
+          example: "An error occurred"
+        "code":
+          type: "string"
+          example: "VALIDATION_ERROR"
+        "details":
+          nullable: true
+      required:
+        - "error"
+    "Attachment":
+      type: "object"
+      properties:
+        "filename":
+          type: "string"
+          minLength: 1
+          example: "document.pdf"
+        "content":
+          type: "string"
+          description: "Base64 encoded file content"
+          example: "JVBERi0xLjQKJe..."
+        "contentType":
+          type: "string"
+          example: "application/pdf"
+      required:
+        - "filename"
+        - "content"
+    "ReplyTo":
+      type: "object"
+      properties:
+        "in_reply_to":
+          type: "string"
+          example: "<message-id@domain.com>"
+        "thread_id":
+          type: "string"
+          format: "uuid"
+          example: "123e4567-e89b-12d3-a456-426614174000"
+        "parent_email_id":
+          type: "string"
+          format: "uuid"
+          example: "123e4567-e89b-12d3-a456-426614174000"
+    "SendEmailRequest":
+      type: "object"
+      properties:
+        "from":
+          type: "string"
+          format: "email"
+          example: "sender@example.com"
+        "to":
+          anyOf:
+            - type: "string"
+              format: "email"
+              example: "recipient@example.com"
+            - type: "array"
+              items:
+                type: "string"
+                format: "email"
+              example: ["recipient1@example.com", "recipient2@example.com"]
+        "subject":
+          type: "string"
+          minLength: 1
+          example: "Hello World"
+        "html":
+          type: "string"
+          example: "<h1>Hello</h1>"
+        "text":
+          type: "string"
+          example: "Hello"
+        "template_id":
+          type: "string"
+          format: "uuid"
+          example: "123e4567-e89b-12d3-a456-426614174000"
+        "template_data":
+          type: "object"
+          additionalProperties:
+            nullable: true
+          example: {"name": "John", "company": "Acme"}
+        "tags":
+          type: "object"
+          additionalProperties:
+            type: "string"
+          example: {"campaign": "welcome", "source": "signup"}
+        "attachments":
+          type: "array"
+          items: {"$ref": "#/components/schemas/Attachment"}
+        "replyTo": {"$ref": "#/components/schemas/ReplyTo"}
+      required:
+        - "from"
+        - "to"
+        - "subject"
+    "Email":
+      type: "object"
+      properties:
+        "id":
+          type: "string"
+          format: "uuid"
+          example: "123e4567-e89b-12d3-a456-426614174000"
+        "organization_id":
+          type: "string"
+          format: "uuid"
+        "message_id":
+          type: "string"
+        "from_email":
+          type: "string"
+          format: "email"
+        "to_email":
+          type: "string"
+          format: "email"
+        "subject":
+          type: "string"
+          nullable: true
+        "html_content":
+          type: "string"
+          nullable: true
+        "text_content":
+          type: "string"
+          nullable: true
+        "template_id":
+          type: "string"
+          nullable: true
+          format: "uuid"
+        "status":
+          type: "string"
+          example: "sent"
+        "ses_message_id":
+          type: "string"
+          nullable: true
+        "broadcast_id":
+          type: "string"
+          nullable: true
+          format: "uuid"
+        "metadata":
+          type: "object"
+          nullable: true
+          additionalProperties:
+            nullable: true
+        "sent_at":
+          type: "string"
+          nullable: true
+          format: "date-time"
+        "delivered_at":
+          type: "string"
+          nullable: true
+          format: "date-time"
+        "opened_at":
+          type: "string"
+          nullable: true
+          format: "date-time"
+        "clicked_at":
+          type: "string"
+          nullable: true
+          format: "date-time"
+        "bounced_at":
+          type: "string"
+          nullable: true
+          format: "date-time"
+        "complained_at":
+          type: "string"
+          nullable: true
+          format: "date-time"
+        "created_at":
+          type: "string"
+          format: "date-time"
+        "thread_id":
+          type: "string"
+          nullable: true
+          format: "uuid"
+        "parent_email_id":
+          type: "string"
+          nullable: true
+          format: "uuid"
+        "attachments":
+          type: "array"
+          nullable: true
+          items:
+            nullable: true
+        "clicked_links":
+          type: "array"
+          nullable: true
+          items:
+            nullable: true
+        "opens":
+          type: "array"
+          nullable: true
+          items:
+            nullable: true
+      required:
+        - "id"
+        - "organization_id"
+        - "message_id"
+        - "from_email"
+        - "to_email"
+        - "subject"
+        - "html_content"
+        - "text_content"
+        - "template_id"
+        - "status"
+        - "ses_message_id"
+        - "broadcast_id"
+        - "metadata"
+        - "sent_at"
+        - "delivered_at"
+        - "opened_at"
+        - "clicked_at"
+        - "bounced_at"
+        - "complained_at"
+        - "created_at"
+        - "thread_id"
+        - "parent_email_id"
+        - "attachments"
+        - "clicked_links"
+        - "opens"
+    "Contact":
+      type: "object"
+      properties:
+        "id":
+          type: "string"
+          format: "uuid"
+          example: "123e4567-e89b-12d3-a456-426614174000"
+        "organization_id":
+          type: "string"
+          format: "uuid"
+        "email":
+          type: "string"
+          format: "email"
+        "first_name":
+          type: "string"
+          nullable: true
+        "last_name":
+          type: "string"
+          nullable: true
+        "metadata":
+          type: "object"
+          nullable: true
+          additionalProperties:
+            nullable: true
+        "subscribed":
+          type: "boolean"
+        "unsubscribed_at":
+          type: "string"
+          nullable: true
+          format: "date-time"
+        "created_at":
+          type: "string"
+          format: "date-time"
+        "updated_at":
+          type: "string"
+          format: "date-time"
+      required:
+        - "id"
+        - "organization_id"
+        - "email"
+        - "first_name"
+        - "last_name"
+        - "metadata"
+        - "subscribed"
+        - "unsubscribed_at"
+        - "created_at"
+        - "updated_at"
+    "CreateContactRequest":
+      type: "object"
+      properties:
+        "email":
+          type: "string"
+          format: "email"
+          example: "contact@example.com"
+        "first_name":
+          type: "string"
+          example: "John"
+        "last_name":
+          type: "string"
+          example: "Doe"
+        "subscribed":
+          type: "boolean"
+          default: true
+          example: true
+        "metadata":
+          type: "object"
+          additionalProperties:
+            nullable: true
+          example: {"source": "website", "plan": "pro"}
+      required:
+        - "email"
+    "BulkCreateContactsResponse":
+      type: "object"
+      properties:
+        "imported":
+          type: "integer"
+          example: 10
+        "total":
+          type: "integer"
+          example: 12
+      required:
+        - "imported"
+        - "total"
+    "BulkCreateContactsRequest":
+      type: "object"
+      properties:
+        "contacts":
+          type: "array"
+          items: {"$ref": "#/components/schemas/CreateContactRequest"}
+      required:
+        - "contacts"
+    "ContactListResponse":
+      type: "object"
+      properties:
+        "contacts":
+          type: "array"
+          items: {"$ref": "#/components/schemas/Contact"}
+        "total":
+          type: "integer"
+        "limit":
+          type: "integer"
+        "offset":
+          type: "integer"
+      required:
+        - "contacts"
+        - "total"
+        - "limit"
+        - "offset"
+    "UpdateContactRequest":
+      type: "object"
+      properties:
+        "email":
+          type: "string"
+          format: "email"
+          example: "contact@example.com"
+        "first_name":
+          type: "string"
+          example: "John"
+        "last_name":
+          type: "string"
+          example: "Doe"
+        "subscribed":
+          type: "boolean"
+          example: true
+        "metadata":
+          type: "object"
+          additionalProperties:
+            nullable: true
+          example: {"source": "website", "plan": "pro"}
+    "Success":
+      type: "object"
+      properties:
+        "success":
+          type: "boolean"
+          example: true
+      required:
+        - "success"
+    "Template":
+      type: "object"
+      properties:
+        "id":
+          type: "string"
+          format: "uuid"
+          example: "123e4567-e89b-12d3-a456-426614174000"
+        "organization_id":
+          type: "string"
+          format: "uuid"
+        "name":
+          type: "string"
+        "subject":
+          type: "string"
+        "html_content":
+          type: "string"
+          nullable: true
+        "text_content":
+          type: "string"
+          nullable: true
+        "variables":
+          type: "array"
+          nullable: true
+          items:
+            type: "string"
+        "created_by":
+          type: "string"
+          nullable: true
+          format: "uuid"
+        "created_at":
+          type: "string"
+          format: "date-time"
+        "updated_at":
+          type: "string"
+          format: "date-time"
+      required:
+        - "id"
+        - "organization_id"
+        - "name"
+        - "subject"
+        - "html_content"
+        - "text_content"
+        - "variables"
+        - "created_by"
+        - "created_at"
+        - "updated_at"
+    "CreateTemplateRequest":
+      type: "object"
+      properties:
+        "name":
+          type: "string"
+          minLength: 1
+          example: "Welcome Email"
+        "subject":
+          type: "string"
+          minLength: 1
+          example: "Welcome to {{company}}"
+        "html_content":
+          type: "string"
+          example: "<h1>Welcome {{name}}</h1>"
+        "text_content":
+          type: "string"
+          example: "Welcome {{name}}"
+        "variables":
+          type: "array"
+          items:
+            type: "string"
+          example: ["name", "company"]
+      required:
+        - "name"
+        - "subject"
+    "DnsRecord":
+      type: "object"
+      properties:
+        "type":
+          type: "string"
+          enum:
+            - "TXT"
+            - "MX"
+            - "CNAME"
+        "name":
+          type: "string"
+        "value":
+          type: "string"
+        "priority":
+          type: "number"
+      required:
+        - "type"
+        - "name"
+        - "value"
+    "DomainDnsRecords":
+      type: "object"
+      nullable: true
+      properties:
+        "dkim": {"$ref": "#/components/schemas/DnsRecord"}
+        "spf": {"$ref": "#/components/schemas/DnsRecord"}
+        "dmarc": {"$ref": "#/components/schemas/DnsRecord"}
+        "mailFromMx": {"$ref": "#/components/schemas/DnsRecord"}
+        "mailFromSpf": {"$ref": "#/components/schemas/DnsRecord"}
+        "receivingMx": {"$ref": "#/components/schemas/DnsRecord"}
+      required:
+        - "dkim"
+        - "spf"
+        - "dmarc"
+        - "mailFromMx"
+        - "mailFromSpf"
+        - "receivingMx"
+    "Domain":
+      type: "object"
+      properties:
+        "id":
+          type: "string"
+          format: "uuid"
+          example: "123e4567-e89b-12d3-a456-426614174000"
+        "organization_id":
+          type: "string"
+          format: "uuid"
+        "domain":
+          type: "string"
+        "status":
+          type: "string"
+          example: "verified"
+        "verification_token":
+          type: "string"
+          nullable: true
+        "dkim_verified":
+          type: "boolean"
+        "spf_verified":
+          type: "boolean"
+        "dmarc_verified":
+          type: "boolean"
+        "cloudflare_zone_id":
+          type: "string"
+          nullable: true
+        "ses_identity_arn":
+          type: "string"
+          nullable: true
+        "created_at":
+          type: "string"
+          format: "date-time"
+        "verified_at":
+          type: "string"
+          nullable: true
+          format: "date-time"
+        "dkim_tokens":
+          type: "array"
+          nullable: true
+          items:
+            type: "string"
+        "dns_records": {"$ref": "#/components/schemas/DomainDnsRecords"}
+        "dkim_selector":
+          type: "string"
+          nullable: true
+        "mail_from_subdomain":
+          type: "string"
+          nullable: true
+        "mail_from_verified":
+          type: "boolean"
+          nullable: true
+        "receiving_enabled":
+          type: "boolean"
+          nullable: true
+        "receiving_subdomain":
+          type: "string"
+          nullable: true
+      required:
+        - "id"
+        - "organization_id"
+        - "domain"
+        - "status"
+        - "verification_token"
+        - "dkim_verified"
+        - "spf_verified"
+        - "dmarc_verified"
+        - "cloudflare_zone_id"
+        - "ses_identity_arn"
+        - "created_at"
+        - "verified_at"
+        - "dkim_tokens"
+        - "dns_records"
+        - "dkim_selector"
+        - "mail_from_subdomain"
+        - "mail_from_verified"
+        - "receiving_enabled"
+        - "receiving_subdomain"
+    "AddDomainRequest":
+      type: "object"
+      properties:
+        "domain":
+          type: "string"
+          minLength: 1
+          example: "example.com"
+        "receivingSubdomain":
+          type: "string"
+          default: "mail"
+          example: "mail"
+      required:
+        - "domain"
+    "DomainVerificationStatus":
+      type: "object"
+      properties:
+        "verified":
+          type: "boolean"
+        "status":
+          type: "string"
+        "dkimStatus":
+          type: "string"
+      required:
+        - "verified"
+        - "status"
+    "DnsVerificationStatus":
+      type: "object"
+      additionalProperties:
+        type: "object"
+        properties:
+          "verified":
+            type: "boolean"
+          "expected":
+            type: "string"
+          "found":
+            type: "array"
+            items:
+              type: "string"
+        required:
+          - "verified"
+    "UpdateDomainRequest":
+      type: "object"
+      properties:
+        "receiving_enabled":
+          type: "boolean"
+          example: true
+    "ApiKey":
+      type: "object"
+      properties:
+        "id":
+          type: "string"
+          format: "uuid"
+          example: "123e4567-e89b-12d3-a456-426614174000"
+        "organization_id":
+          type: "string"
+          format: "uuid"
+        "name":
+          type: "string"
+        "key":
+          type: "string"
+          description: "Only returned when creating a new key"
+          example: "re_abc123..."
+        "permissions":
+          type: "array"
+          nullable: true
+          items:
+            type: "string"
+        "last_used_at":
+          type: "string"
+          nullable: true
+          format: "date-time"
+        "created_by":
+          type: "string"
+          nullable: true
+          format: "uuid"
+        "created_at":
+          type: "string"
+          format: "date-time"
+        "revoked_at":
+          type: "string"
+          nullable: true
+          format: "date-time"
+      required:
+        - "id"
+        - "organization_id"
+        - "name"
+        - "permissions"
+        - "last_used_at"
+        - "created_by"
+        - "created_at"
+        - "revoked_at"
+    "CreateApiKeyRequest":
+      type: "object"
+      properties:
+        "name":
+          type: "string"
+          minLength: 1
+          example: "Production API Key"
+        "permissions":
+          type: "array"
+          items:
+            type: "string"
+          example: ["emails:send", "contacts:read"]
+      required:
+        - "name"
+    "ApiKeyListItem":
+      type: "object"
+      properties:
+        "id":
+          type: "string"
+          format: "uuid"
+        "name":
+          type: "string"
+        "permissions":
+          type: "array"
+          nullable: true
+          items:
+            type: "string"
+        "last_used_at":
+          type: "string"
+          nullable: true
+          format: "date-time"
+        "created_at":
+          type: "string"
+          format: "date-time"
+      required:
+        - "id"
+        - "name"
+        - "permissions"
+        - "last_used_at"
+        - "created_at"
+    "Webhook":
+      type: "object"
+      properties:
+        "id":
+          type: "string"
+          format: "uuid"
+          example: "123e4567-e89b-12d3-a456-426614174000"
+        "organization_id":
+          type: "string"
+          format: "uuid"
+        "name":
+          type: "string"
+        "url":
+          type: "string"
+          format: "uri"
+        "events":
+          type: "array"
+          items:
+            type: "string"
+        "secret":
+          type: "string"
+        "active":
+          type: "boolean"
+        "created_by":
+          type: "string"
+          nullable: true
+          format: "uuid"
+        "created_at":
+          type: "string"
+          format: "date-time"
+      required:
+        - "id"
+        - "organization_id"
+        - "name"
+        - "url"
+        - "events"
+        - "secret"
+        - "active"
+        - "created_by"
+        - "created_at"
+    "CreateWebhookRequest":
+      type: "object"
+      properties:
+        "name":
+          type: "string"
+          minLength: 1
+          example: "Email Events Webhook"
+        "url":
+          type: "string"
+          format: "uri"
+          example: "https://api.example.com/webhooks"
+        "events":
+          type: "array"
+          items:
+            type: "string"
+          example: ["email.sent", "email.delivered", "email.bounced"]
+      required:
+        - "name"
+        - "url"
+        - "events"
+    "WebhookToggleResponse":
+      type: "object"
+      properties:
+        "success":
+          type: "boolean"
+        "active":
+          type: "boolean"
+      required:
+        - "success"
+        - "active"
+    "WebhookDelivery":
+      type: "object"
+      properties:
+        "id":
+          type: "string"
+          format: "uuid"
+        "webhook_id":
+          type: "string"
+          format: "uuid"
+        "event_type":
+          type: "string"
+        "payload":
+          type: "object"
+          additionalProperties:
+            nullable: true
+        "response_status":
+          type: "number"
+          nullable: true
+        "response_body":
+          type: "string"
+          nullable: true
+        "attempt_count":
+          type: "number"
+        "delivered_at":
+          type: "string"
+          nullable: true
+          format: "date-time"
+        "created_at":
+          type: "string"
+          format: "date-time"
+      required:
+        - "id"
+        - "webhook_id"
+        - "event_type"
+        - "payload"
+        - "response_status"
+        - "response_body"
+        - "attempt_count"
+        - "delivered_at"
+        - "created_at"
+    "Broadcast":
+      type: "object"
+      properties:
+        "id":
+          type: "string"
+          format: "uuid"
+          example: "123e4567-e89b-12d3-a456-426614174000"
+        "organization_id":
+          type: "string"
+          format: "uuid"
+        "name":
+          type: "string"
+        "subject":
+          type: "string"
+        "from_email":
+          type: "string"
+          format: "email"
+        "template_id":
+          type: "string"
+          nullable: true
+          format: "uuid"
+        "segment_id":
+          type: "string"
+          nullable: true
+          format: "uuid"
+        "status":
+          type: "string"
+          example: "draft"
+        "total_recipients":
+          type: "number"
+          nullable: true
+        "sent_count":
+          type: "number"
+          nullable: true
+        "delivered_count":
+          type: "number"
+          nullable: true
+        "opened_count":
+          type: "number"
+          nullable: true
+        "clicked_count":
+          type: "number"
+          nullable: true
+        "bounced_count":
+          type: "number"
+          nullable: true
+        "scheduled_at":
+          type: "string"
+          nullable: true
+          format: "date-time"
+        "started_at":
+          type: "string"
+          nullable: true
+          format: "date-time"
+        "completed_at":
+          type: "string"
+          nullable: true
+          format: "date-time"
+        "created_by":
+          type: "string"
+          nullable: true
+          format: "uuid"
+        "created_at":
+          type: "string"
+          format: "date-time"
+      required:
+        - "id"
+        - "organization_id"
+        - "name"
+        - "subject"
+        - "from_email"
+        - "template_id"
+        - "segment_id"
+        - "status"
+        - "total_recipients"
+        - "sent_count"
+        - "delivered_count"
+        - "opened_count"
+        - "clicked_count"
+        - "bounced_count"
+        - "scheduled_at"
+        - "started_at"
+        - "completed_at"
+        - "created_by"
+        - "created_at"
+    "CreateBroadcastRequest":
+      type: "object"
+      properties:
+        "name":
+          type: "string"
+          minLength: 1
+          example: "Newsletter - January 2024"
+        "subject":
+          type: "string"
+          minLength: 1
+          example: "Your monthly update"
+        "from_email":
+          type: "string"
+          format: "email"
+          example: "newsletter@example.com"
+        "template_id":
+          type: "string"
+          format: "uuid"
+        "segment_id":
+          type: "string"
+          format: "uuid"
+        "html_content":
+          type: "string"
+        "text_content":
+          type: "string"
+        "scheduled_at":
+          type: "string"
+          format: "date-time"
+      required:
+        - "name"
+        - "subject"
+        - "from_email"
+    "SendBroadcastResponse":
+      type: "object"
+      properties:
+        "success":
+          type: "boolean"
+        "sent":
+          type: "integer"
+        "total":
+          type: "integer"
+      required:
+        - "success"
+        - "sent"
+        - "total"
+    "Segment":
+      type: "object"
+      properties:
+        "id":
+          type: "string"
+          format: "uuid"
+          example: "123e4567-e89b-12d3-a456-426614174000"
+        "organization_id":
+          type: "string"
+          format: "uuid"
+        "name":
+          type: "string"
+        "description":
+          type: "string"
+          nullable: true
+        "conditions":
+          type: "object"
+          additionalProperties:
+            nullable: true
+        "created_by":
+          type: "string"
+          nullable: true
+          format: "uuid"
+        "created_at":
+          type: "string"
+          format: "date-time"
+        "updated_at":
+          type: "string"
+          format: "date-time"
+      required:
+        - "id"
+        - "organization_id"
+        - "name"
+        - "description"
+        - "conditions"
+        - "created_by"
+        - "created_at"
+        - "updated_at"
+    "CreateSegmentRequest":
+      type: "object"
+      properties:
+        "name":
+          type: "string"
+          minLength: 1
+          example: "Active Users"
+        "description":
+          type: "string"
+          example: "Users who opened an email in the last 30 days"
+        "conditions":
+          type: "object"
+          additionalProperties:
+            nullable: true
+          example: {"opened_email": {"within_days": 30}}
+      required:
+        - "name"
+        - "conditions"
+    "UsageMetric":
+      type: "object"
+      properties:
+        "id":
+          type: "string"
+          format: "uuid"
+        "organization_id":
+          type: "string"
+          format: "uuid"
+        "metric_type":
+          type: "string"
+        "count":
+          type: "number"
+        "date":
+          type: "string"
+        "created_at":
+          type: "string"
+          format: "date-time"
+      required:
+        - "id"
+        - "organization_id"
+        - "metric_type"
+        - "count"
+        - "date"
+        - "created_at"
+    "EmailMetrics":
+      type: "object"
+      properties:
+        "total":
+          type: "integer"
+          example: 1000
+        "sent":
+          type: "integer"
+          example: 950
+        "delivered":
+          type: "integer"
+          example: 920
+        "bounced":
+          type: "integer"
+          example: 25
+        "complained":
+          type: "integer"
+          example: 5
+      required:
+        - "total"
+        - "sent"
+        - "delivered"
+        - "bounced"
+        - "complained"
+    "EmailEvent":
+      type: "object"
+      properties:
+        "id":
+          type: "string"
+          format: "uuid"
+        "email_id":
+          type: "string"
+          format: "uuid"
+        "event_type":
+          type: "string"
+          example: "delivered"
+        "event_data":
+          type: "object"
+          nullable: true
+          additionalProperties:
+            nullable: true
+        "ip_address":
+          type: "string"
+          nullable: true
+        "user_agent":
+          type: "string"
+          nullable: true
+        "created_at":
+          type: "string"
+          format: "date-time"
+        "emails": {"$ref": "#/components/schemas/Email"}
+      required:
+        - "id"
+        - "email_id"
+        - "event_type"
+        - "event_data"
+        - "ip_address"
+        - "user_agent"
+        - "created_at"
+    "Organization":
+      type: "object"
+      properties:
+        "id":
+          type: "string"
+          format: "uuid"
+        "name":
+          type: "string"
+        "slug":
+          type: "string"
+        "plan":
+          type: "string"
+          nullable: true
+        "billing_email":
+          type: "string"
+          nullable: true
+        "stripe_customer_id":
+          type: "string"
+          nullable: true
+        "stripe_subscription_id":
+          type: "string"
+          nullable: true
+        "usage_limit":
+          type: "number"
+          nullable: true
+        "created_at":
+          type: "string"
+          format: "date-time"
+        "updated_at":
+          type: "string"
+          format: "date-time"
+        "ses_configuration_set":
+          type: "string"
+          nullable: true
+        "ses_tenant_name":
+          type: "string"
+          nullable: true
+        "ses_tenant_id":
+          type: "string"
+          nullable: true
+      required:
+        - "id"
+        - "name"
+        - "slug"
+        - "plan"
+        - "billing_email"
+        - "stripe_customer_id"
+        - "stripe_subscription_id"
+        - "usage_limit"
+        - "created_at"
+        - "updated_at"
+        - "ses_configuration_set"
+        - "ses_tenant_name"
+        - "ses_tenant_id"
+    "UpdateOrganizationRequest":
+      type: "object"
+      properties:
+        "name":
+          type: "string"
+          example: "My Company"
+        "billing_email":
+          type: "string"
+          format: "email"
+          example: "billing@example.com"
+    "TeamMember":
+      type: "object"
+      properties:
+        "id":
+          type: "string"
+          format: "uuid"
+        "organization_id":
+          type: "string"
+          format: "uuid"
+        "user_id":
+          type: "string"
+          format: "uuid"
+        "role":
+          type: "string"
+          nullable: true
+        "created_at":
+          type: "string"
+          format: "date-time"
+        "profiles":
+          type: "object"
+          nullable: true
+          properties:
+            "id":
+              type: "string"
+              format: "uuid"
+            "email":
+              type: "string"
+            "full_name":
+              type: "string"
+              nullable: true
+            "avatar_url":
+              type: "string"
+              nullable: true
+          required:
+            - "id"
+            - "email"
+            - "full_name"
+            - "avatar_url"
+      required:
+        - "id"
+        - "organization_id"
+        - "user_id"
+        - "role"
+        - "created_at"
+        - "profiles"
+    "UnsubscribeSettings":
+      type: "object"
+      properties:
+        "id":
+          type: "string"
+          format: "uuid"
+        "organization_id":
+          type: "string"
+          format: "uuid"
+        "custom_message":
+          type: "string"
+          nullable: true
+        "redirect_url":
+          type: "string"
+          nullable: true
+        "one_click_enabled":
+          type: "boolean"
+          nullable: true
+        "created_at":
+          type: "string"
+          format: "date-time"
+        "updated_at":
+          type: "string"
+          format: "date-time"
+    "UpdateUnsubscribeSettingsRequest":
+      type: "object"
+      properties:
+        "custom_message":
+          type: "string"
+          example: "You have been unsubscribed from our mailing list."
+        "redirect_url":
+          type: "string"
+          format: "uri"
+          example: "https://example.com/unsubscribed"
+        "one_click_enabled":
+          type: "boolean"
+          example: true
+paths:
+  "/v1/emails/send":
+    post:
+      tags:
+        - "emails"
+      operationId: "sendEmail"
+      summary: "Send an email"
+      description: "Send an email to one or multiple recipients"
+      security:
+        - bearerAuth: []
+      requestBody:
+        content:
+          "application/json":
+            schema: {"$ref": "#/components/schemas/SendEmailRequest"}
+      responses:
+        "200":
+          description: "Email sent successfully"
+          content:
+            "application/json":
+              schema: {"$ref": "#/components/schemas/SendEmailResponse"}
+        "400":
+          description: "Validation error"
+          content:
+            "application/json":
+              schema: {"$ref": "#/components/schemas/Error"}
+        "401":
+          description: "Unauthorized"
+          content:
+            "application/json":
+              schema: {"$ref": "#/components/schemas/Error"}
+        "429":
+          description: "Rate limit exceeded"
+          content:
+            "application/json":
+              schema: {"$ref": "#/components/schemas/Error"}
+      x-speakeasy-name-override: "send"
+  "/v1/emails/{id}":
+    get:
+      tags:
+        - "emails"
+      operationId: "getEmail"
+      summary: "Get email by ID"
+      description: "Retrieve details of a specific email"
+      security:
+        - bearerAuth: []
+      parameters:
+        - schema:
+            type: "string"
+            format: "uuid"
+            example: "123e4567-e89b-12d3-a456-426614174000"
+          required: true
+          name: "id"
+          in: "path"
+      responses:
+        "200":
+          description: "Email details"
+          content:
+            "application/json":
+              schema: {"$ref": "#/components/schemas/Email"}
+        "401":
+          description: "Unauthorized"
+          content:
+            "application/json":
+              schema: {"$ref": "#/components/schemas/Error"}
+        "404":
+          description: "Email not found"
+          content:
+            "application/json":
+              schema: {"$ref": "#/components/schemas/Error"}
+      x-speakeasy-name-override: "get"
+  "/v1/emails":
+    get:
+      tags:
+        - "emails"
+      operationId: "listEmails"
+      summary: "List emails"
+      description: "Get a paginated list of sent emails"
+      security:
+        - bearerAuth: []
+      parameters:
+        - schema:
+            type: "string"
+            default: "1"
+            example: "1"
+          required: false
+          name: "page"
+          in: "query"
+        - schema:
+            type: "string"
+            default: "50"
+            example: "50"
+          required: false
+          name: "limit"
+          in: "query"
+      responses:
+        "200":
+          description: "List of emails with pagination"
+          content:
+            "application/json":
+              schema:
+                type: "object"
+                properties:
+                  "data":
+                    type: "array"
+                    items: {"$ref": "#/components/schemas/Email"}
+                  "pagination":
+                    type: "object"
+                    properties:
+                      "page":
+                        type: "integer"
+                      "limit":
+                        type: "integer"
+                      "total":
+                        type: "integer"
+                      "pages":
+                        type: "integer"
+                    required:
+                      - "page"
+                      - "limit"
+                      - "total"
+                      - "pages"
+                required:
+                  - "data"
+                  - "pagination"
+        "401":
+          description: "Unauthorized"
+          content:
+            "application/json":
+              schema: {"$ref": "#/components/schemas/Error"}
+      x-speakeasy-name-override: "list"
+  "/v1/contacts":
+    post:
+      tags:
+        - "contacts"
+      operationId: "createContact"
+      summary: "Create a contact"
+      description: "Create a new contact in your organization"
+      security:
+        - bearerAuth: []
+      requestBody:
+        content:
+          "application/json":
+            schema: {"$ref": "#/components/schemas/CreateContactRequest"}
+      responses:
+        "200":
+          description: "Contact created"
+          content:
+            "application/json":
+              schema: {"$ref": "#/components/schemas/Contact"}
+        "400":
+          description: "Validation error or duplicate email"
+          content:
+            "application/json":
+              schema: {"$ref": "#/components/schemas/Error"}
+        "401":
+          description: "Unauthorized"
+          content:
+            "application/json":
+              schema: {"$ref": "#/components/schemas/Error"}
+      x-speakeasy-name-override: "create"
+    get:
+      tags:
+        - "contacts"
+      operationId: "listContacts"
+      summary: "List contacts"
+      description: "Get a list of contacts with optional filtering"
+      security:
+        - bearerAuth: []
+      parameters:
+        - schema:
+            type: "string"
+            example: "100"
+          required: false
+          name: "limit"
+          in: "query"
+        - schema:
+            type: "string"
+            example: "0"
+          required: false
+          name: "offset"
+          in: "query"
+        - schema:
+            type: "string"
+            example: "true"
+          required: false
+          name: "subscribed"
+          in: "query"
+      responses:
+        "200":
+          description: "List of contacts"
+          content:
+            "application/json":
+              schema: {"$ref": "#/components/schemas/ContactListResponse"}
+        "401":
+          description: "Unauthorized"
+          content:
+            "application/json":
+              schema: {"$ref": "#/components/schemas/Error"}
+      x-speakeasy-name-override: "list"
+  "/v1/contacts/bulk":
+    post:
+      tags:
+        - "contacts"
+      operationId: "bulkCreateContacts"
+      summary: "Bulk create contacts"
+      description: "Import multiple contacts at once"
+      security:
+        - bearerAuth: []
+      requestBody:
+        content:
+          "application/json":
+            schema: {"$ref": "#/components/schemas/BulkCreateContactsRequest"}
+      responses:
+        "200":
+          description: "Contacts imported"
+          content:
+            "application/json":
+              schema: {"$ref": "#/components/schemas/BulkCreateContactsResponse"}
+        "401":
+          description: "Unauthorized"
+          content:
+            "application/json":
+              schema: {"$ref": "#/components/schemas/Error"}
+      x-speakeasy-name-override: "bulkCreate"
+  "/v1/contacts/{id}":
+    get:
+      tags:
+        - "contacts"
+      operationId: "getContact"
+      summary: "Get contact"
+      description: "Get a specific contact by ID"
+      security:
+        - bearerAuth: []
+      parameters:
+        - schema:
+            type: "string"
+            format: "uuid"
+            example: "123e4567-e89b-12d3-a456-426614174000"
+          required: true
+          name: "id"
+          in: "path"
+      responses:
+        "200":
+          description: "Contact details"
+          content:
+            "application/json":
+              schema: {"$ref": "#/components/schemas/Contact"}
+        "401":
+          description: "Unauthorized"
+          content:
+            "application/json":
+              schema: {"$ref": "#/components/schemas/Error"}
+        "404":
+          description: "Contact not found"
+          content:
+            "application/json":
+              schema: {"$ref": "#/components/schemas/Error"}
+      x-speakeasy-name-override: "get"
+    put:
+      tags:
+        - "contacts"
+      operationId: "updateContact"
+      summary: "Update contact"
+      description: "Update a contact's information"
+      security:
+        - bearerAuth: []
+      parameters:
+        - schema:
+            type: "string"
+            format: "uuid"
+            example: "123e4567-e89b-12d3-a456-426614174000"
+          required: true
+          name: "id"
+          in: "path"
+      requestBody:
+        content:
+          "application/json":
+            schema: {"$ref": "#/components/schemas/UpdateContactRequest"}
+      responses:
+        "200":
+          description: "Contact updated"
+          content:
+            "application/json":
+              schema: {"$ref": "#/components/schemas/Contact"}
+        "401":
+          description: "Unauthorized"
+          content:
+            "application/json":
+              schema: {"$ref": "#/components/schemas/Error"}
+        "404":
+          description: "Contact not found"
+          content:
+            "application/json":
+              schema: {"$ref": "#/components/schemas/Error"}
+      x-speakeasy-name-override: "update"
+    delete:
+      tags:
+        - "contacts"
+      operationId: "deleteContact"
+      summary: "Delete contact"
+      description: "Delete a contact from your organization"
+      security:
+        - bearerAuth: []
+      parameters:
+        - schema:
+            type: "string"
+            format: "uuid"
+            example: "123e4567-e89b-12d3-a456-426614174000"
+          required: true
+          name: "id"
+          in: "path"
+      responses:
+        "200":
+          description: "Contact deleted"
+          content:
+            "application/json":
+              schema: {"$ref": "#/components/schemas/Success"}
+        "401":
+          description: "Unauthorized"
+          content:
+            "application/json":
+              schema: {"$ref": "#/components/schemas/Error"}
+        "404":
+          description: "Contact not found"
+          content:
+            "application/json":
+              schema: {"$ref": "#/components/schemas/Error"}
+      x-speakeasy-name-override: "delete"
+  "/v1/templates":
+    post:
+      tags:
+        - "templates"
+      operationId: "createTemplate"
+      summary: "Create a template"
+      description: "Create a new email template"
+      security:
+        - bearerAuth: []
+      requestBody:
+        content:
+          "application/json":
+            schema: {"$ref": "#/components/schemas/CreateTemplateRequest"}
+      responses:
+        "200":
+          description: "Template created"
+          content:
+            "application/json":
+              schema: {"$ref": "#/components/schemas/Template"}
+        "500":
+          description: "Server error"
+          content:
+            "application/json":
+              schema: {"$ref": "#/components/schemas/Error"}
+      x-speakeasy-name-override: "create"
+    get:
+      tags:
+        - "templates"
+      operationId: "listTemplates"
+      summary: "List templates"
+      description: "Get all email templates for your organization"
+      security:
+        - bearerAuth: []
+      responses:
+        "200":
+          description: "List of templates"
+          content:
+            "application/json":
+              schema:
+                type: "array"
+                items: {"$ref": "#/components/schemas/Template"}
+        "500":
+          description: "Server error"
+          content:
+            "application/json":
+              schema: {"$ref": "#/components/schemas/Error"}
+      x-speakeasy-name-override: "list"
+  "/v1/templates/{id}":
+    get:
+      tags:
+        - "templates"
+      operationId: "getTemplate"
+      summary: "Get template"
+      description: "Get a specific template by ID"
+      security:
+        - bearerAuth: []
+      parameters:
+        - schema:
+            type: "string"
+            format: "uuid"
+            example: "123e4567-e89b-12d3-a456-426614174000"
+          required: true
+          name: "id"
+          in: "path"
+      responses:
+        "200":
+          description: "Template details"
+          content:
+            "application/json":
+              schema: {"$ref": "#/components/schemas/Template"}
+        "404":
+          description: "Template not found"
+          content:
+            "application/json":
+              schema: {"$ref": "#/components/schemas/Error"}
+      x-speakeasy-name-override: "get"
+    put:
+      tags:
+        - "templates"
+      operationId: "updateTemplate"
+      summary: "Update template"
+      description: "Update an existing template"
+      security:
+        - bearerAuth: []
+      parameters:
+        - schema:
+            type: "string"
+            format: "uuid"
+            example: "123e4567-e89b-12d3-a456-426614174000"
+          required: true
+          name: "id"
+          in: "path"
+      requestBody:
+        content:
+          "application/json":
+            schema: {"$ref": "#/components/schemas/CreateTemplateRequest"}
+      responses:
+        "200":
+          description: "Template updated"
+          content:
+            "application/json":
+              schema: {"$ref": "#/components/schemas/Template"}
+        "500":
+          description: "Server error"
+          content:
+            "application/json":
+              schema: {"$ref": "#/components/schemas/Error"}
+      x-speakeasy-name-override: "update"
+    delete:
+      tags:
+        - "templates"
+      operationId: "deleteTemplate"
+      summary: "Delete template"
+      description: "Delete a template"
+      security:
+        - bearerAuth: []
+      parameters:
+        - schema:
+            type: "string"
+            format: "uuid"
+            example: "123e4567-e89b-12d3-a456-426614174000"
+          required: true
+          name: "id"
+          in: "path"
+      responses:
+        "200":
+          description: "Template deleted"
+          content:
+            "application/json":
+              schema: {"$ref": "#/components/schemas/Success"}
+        "500":
+          description: "Server error"
+          content:
+            "application/json":
+              schema: {"$ref": "#/components/schemas/Error"}
+      x-speakeasy-name-override: "delete"
+  "/v1/domains":
+    post:
+      tags:
+        - "domains"
+      operationId: "addDomain"
+      summary: "Add domain"
+      description: "Add a new domain with BYODKIM"
+      security:
+        - bearerAuth: []
+      requestBody:
+        content:
+          "application/json":
+            schema: {"$ref": "#/components/schemas/AddDomainRequest"}
+      responses:
+        "200":
+          description: "Domain added"
+          content:
+            "application/json":
+              schema: {"$ref": "#/components/schemas/Domain"}
+        "500":
+          description: "Server error"
+          content:
+            "application/json":
+              schema: {"$ref": "#/components/schemas/Error"}
+      x-speakeasy-name-override: "add"
+    get:
+      tags:
+        - "domains"
+      operationId: "listDomains"
+      summary: "List domains"
+      description: "Get all domains for your organization"
+      security:
+        - bearerAuth: []
+      responses:
+        "200":
+          description: "List of domains"
+          content:
+            "application/json":
+              schema:
+                type: "array"
+                items: {"$ref": "#/components/schemas/Domain"}
+        "500":
+          description: "Server error"
+          content:
+            "application/json":
+              schema: {"$ref": "#/components/schemas/Error"}
+      x-speakeasy-name-override: "list"
+  "/v1/domains/{id}/verify":
+    post:
+      tags:
+        - "domains"
+      operationId: "verifyDomain"
+      summary: "Verify domain"
+      description: "Check domain verification status with SES"
+      security:
+        - bearerAuth: []
+      parameters:
+        - schema:
+            type: "string"
+            format: "uuid"
+            example: "123e4567-e89b-12d3-a456-426614174000"
+          required: true
+          name: "id"
+          in: "path"
+      responses:
+        "200":
+          description: "Verification status"
+          content:
+            "application/json":
+              schema: {"$ref": "#/components/schemas/DomainVerificationStatus"}
+        "404":
+          description: "Not found"
+          content:
+            "application/json":
+              schema: {"$ref": "#/components/schemas/Error"}
+      x-speakeasy-name-override: "verify"
+  "/v1/domains/{id}/dns-status":
+    get:
+      tags:
+        - "domains"
+      operationId: "getDomainDnsStatus"
+      summary: "Get DNS status"
+      description: "Check DNS records verification status"
+      security:
+        - bearerAuth: []
+      parameters:
+        - schema:
+            type: "string"
+            format: "uuid"
+            example: "123e4567-e89b-12d3-a456-426614174000"
+          required: true
+          name: "id"
+          in: "path"
+      responses:
+        "200":
+          description: "DNS status"
+          content:
+            "application/json":
+              schema: {"$ref": "#/components/schemas/DnsVerificationStatus"}
+        "404":
+          description: "Not found"
+          content:
+            "application/json":
+              schema: {"$ref": "#/components/schemas/Error"}
+      x-speakeasy-name-override: "getDnsStatus"
+  "/v1/domains/{id}":
+    patch:
+      tags:
+        - "domains"
+      operationId: "updateDomain"
+      summary: "Update domain"
+      description: "Update domain settings"
+      security:
+        - bearerAuth: []
+      parameters:
+        - schema:
+            type: "string"
+            format: "uuid"
+            example: "123e4567-e89b-12d3-a456-426614174000"
+          required: true
+          name: "id"
+          in: "path"
+      requestBody:
+        content:
+          "application/json":
+            schema: {"$ref": "#/components/schemas/UpdateDomainRequest"}
+      responses:
+        "200":
+          description: "Domain updated"
+          content:
+            "application/json":
+              schema: {"$ref": "#/components/schemas/Domain"}
+        "404":
+          description: "Not found"
+          content:
+            "application/json":
+              schema: {"$ref": "#/components/schemas/Error"}
+        "500":
+          description: "Server error"
+          content:
+            "application/json":
+              schema: {"$ref": "#/components/schemas/Error"}
+      x-speakeasy-name-override: "update"
+    delete:
+      tags:
+        - "domains"
+      operationId: "deleteDomain"
+      summary: "Delete domain"
+      description: "Delete a domain and remove it from SES"
+      security:
+        - bearerAuth: []
+      parameters:
+        - schema:
+            type: "string"
+            format: "uuid"
+            example: "123e4567-e89b-12d3-a456-426614174000"
+          required: true
+          name: "id"
+          in: "path"
+      responses:
+        "200":
+          description: "Domain deleted"
+          content:
+            "application/json":
+              schema: {"$ref": "#/components/schemas/Success"}
+        "404":
+          description: "Not found"
+          content:
+            "application/json":
+              schema: {"$ref": "#/components/schemas/Error"}
+        "500":
+          description: "Server error"
+          content:
+            "application/json":
+              schema: {"$ref": "#/components/schemas/Error"}
+      x-speakeasy-name-override: "delete"
+  "/v1/keys":
+    post:
+      tags:
+        - "api-keys"
+      operationId: "createApiKey"
+      summary: "Create API key"
+      description: "Create a new API key for programmatic access"
+      security:
+        - bearerAuth: []
+      requestBody:
+        content:
+          "application/json":
+            schema: {"$ref": "#/components/schemas/CreateApiKeyRequest"}
+      responses:
+        "200":
+          description: "API key created (key is only shown once)"
+          content:
+            "application/json":
+              schema: {"$ref": "#/components/schemas/ApiKey"}
+        "500":
+          description: "Server error"
+          content:
+            "application/json":
+              schema: {"$ref": "#/components/schemas/Error"}
+      x-speakeasy-name-override: "create"
+    get:
+      tags:
+        - "api-keys"
+      operationId: "listApiKeys"
+      summary: "List API keys"
+      description: "Get all active API keys (keys are not returned)"
+      security:
+        - bearerAuth: []
+      responses:
+        "200":
+          description: "List of API keys"
+          content:
+            "application/json":
+              schema:
+                type: "array"
+                items: {"$ref": "#/components/schemas/ApiKeyListItem"}
+        "500":
+          description: "Server error"
+          content:
+            "application/json":
+              schema: {"$ref": "#/components/schemas/Error"}
+      x-speakeasy-name-override: "list"
+  "/v1/keys/{id}":
+    delete:
+      tags:
+        - "api-keys"
+      operationId: "revokeApiKey"
+      summary: "Revoke API key"
+      description: "Revoke an API key (soft delete)"
+      security:
+        - bearerAuth: []
+      parameters:
+        - schema:
+            type: "string"
+            format: "uuid"
+            example: "123e4567-e89b-12d3-a456-426614174000"
+          required: true
+          name: "id"
+          in: "path"
+      responses:
+        "200":
+          description: "API key revoked"
+          content:
+            "application/json":
+              schema: {"$ref": "#/components/schemas/Success"}
+        "500":
+          description: "Server error"
+          content:
+            "application/json":
+              schema: {"$ref": "#/components/schemas/Error"}
+      x-speakeasy-group: "apiKeys"
+      x-speakeasy-name-override: "revoke"
+  "/v1/webhooks":
+    post:
+      tags:
+        - "webhooks"
+      operationId: "createWebhook"
+      summary: "Create webhook"
+      description: "Create a new webhook endpoint for event notifications"
+      security:
+        - bearerAuth: []
+      requestBody:
+        content:
+          "application/json":
+            schema: {"$ref": "#/components/schemas/CreateWebhookRequest"}
+      responses:
+        "200":
+          description: "Webhook created"
+          content:
+            "application/json":
+              schema: {"$ref": "#/components/schemas/Webhook"}
+        "500":
+          description: "Server error"
+          content:
+            "application/json":
+              schema: {"$ref": "#/components/schemas/Error"}
+      x-speakeasy-name-override: "create"
+    get:
+      tags:
+        - "webhooks"
+      operationId: "listWebhooks"
+      summary: "List webhooks"
+      description: "Get all webhooks for your organization"
+      security:
+        - bearerAuth: []
+      responses:
+        "200":
+          description: "List of webhooks"
+          content:
+            "application/json":
+              schema:
+                type: "array"
+                items: {"$ref": "#/components/schemas/Webhook"}
+        "500":
+          description: "Server error"
+          content:
+            "application/json":
+              schema: {"$ref": "#/components/schemas/Error"}
+      x-speakeasy-name-override: "list"
+  "/v1/webhooks/{id}/toggle":
+    put:
+      tags:
+        - "webhooks"
+      operationId: "toggleWebhook"
+      summary: "Toggle webhook"
+      description: "Enable or disable a webhook"
+      security:
+        - bearerAuth: []
+      parameters:
+        - schema:
+            type: "string"
+            format: "uuid"
+            example: "123e4567-e89b-12d3-a456-426614174000"
+          required: true
+          name: "id"
+          in: "path"
+      responses:
+        "200":
+          description: "Webhook toggled"
+          content:
+            "application/json":
+              schema: {"$ref": "#/components/schemas/WebhookToggleResponse"}
+        "404":
+          description: "Webhook not found"
+          content:
+            "application/json":
+              schema: {"$ref": "#/components/schemas/Error"}
+        "500":
+          description: "Server error"
+          content:
+            "application/json":
+              schema: {"$ref": "#/components/schemas/Error"}
+      x-speakeasy-name-override: "toggle"
+  "/v1/webhooks/{id}":
+    delete:
+      tags:
+        - "webhooks"
+      operationId: "deleteWebhook"
+      summary: "Delete webhook"
+      description: "Delete a webhook and its delivery history"
+      security:
+        - bearerAuth: []
+      parameters:
+        - schema:
+            type: "string"
+            format: "uuid"
+            example: "123e4567-e89b-12d3-a456-426614174000"
+          required: true
+          name: "id"
+          in: "path"
+      responses:
+        "200":
+          description: "Webhook deleted"
+          content:
+            "application/json":
+              schema: {"$ref": "#/components/schemas/Success"}
+        "500":
+          description: "Server error"
+          content:
+            "application/json":
+              schema: {"$ref": "#/components/schemas/Error"}
+      x-speakeasy-name-override: "delete"
+  "/v1/webhooks/{id}/deliveries":
+    get:
+      tags:
+        - "webhooks"
+      operationId: "getWebhookDeliveries"
+      summary: "Get webhook deliveries"
+      description: "Get recent delivery attempts for a webhook"
+      security:
+        - bearerAuth: []
+      parameters:
+        - schema:
+            type: "string"
+            format: "uuid"
+            example: "123e4567-e89b-12d3-a456-426614174000"
+          required: true
+          name: "id"
+          in: "path"
+      responses:
+        "200":
+          description: "List of webhook deliveries"
+          content:
+            "application/json":
+              schema:
+                type: "array"
+                items: {"$ref": "#/components/schemas/WebhookDelivery"}
+        "404":
+          description: "Webhook not found"
+          content:
+            "application/json":
+              schema: {"$ref": "#/components/schemas/Error"}
+        "500":
+          description: "Server error"
+          content:
+            "application/json":
+              schema: {"$ref": "#/components/schemas/Error"}
+      x-speakeasy-name-override: "listDeliveries"
+  "/v1/broadcasts":
+    post:
+      tags:
+        - "broadcasts"
+      operationId: "createBroadcast"
+      summary: "Create broadcast"
+      description: "Create a new email broadcast campaign"
+      security:
+        - bearerAuth: []
+      requestBody:
+        content:
+          "application/json":
+            schema: {"$ref": "#/components/schemas/CreateBroadcastRequest"}
+      responses:
+        "200":
+          description: "Broadcast created"
+          content:
+            "application/json":
+              schema: {"$ref": "#/components/schemas/Broadcast"}
+        "500":
+          description: "Server error"
+          content:
+            "application/json":
+              schema: {"$ref": "#/components/schemas/Error"}
+      x-speakeasy-name-override: "create"
+    get:
+      tags:
+        - "broadcasts"
+      operationId: "listBroadcasts"
+      summary: "List broadcasts"
+      description: "Get all broadcasts for your organization"
+      security:
+        - bearerAuth: []
+      responses:
+        "200":
+          description: "List of broadcasts"
+          content:
+            "application/json":
+              schema:
+                type: "array"
+                items: {"$ref": "#/components/schemas/Broadcast"}
+        "500":
+          description: "Server error"
+          content:
+            "application/json":
+              schema: {"$ref": "#/components/schemas/Error"}
+      x-speakeasy-name-override: "list"
+  "/v1/broadcasts/{id}/send":
+    post:
+      tags:
+        - "broadcasts"
+      operationId: "sendBroadcast"
+      summary: "Send broadcast"
+      description: "Send a broadcast to all recipients"
+      security:
+        - bearerAuth: []
+      parameters:
+        - schema:
+            type: "string"
+            format: "uuid"
+            example: "123e4567-e89b-12d3-a456-426614174000"
+          required: true
+          name: "id"
+          in: "path"
+      responses:
+        "200":
+          description: "Broadcast sent"
+          content:
+            "application/json":
+              schema: {"$ref": "#/components/schemas/SendBroadcastResponse"}
+        "404":
+          description: "Broadcast not found"
+          content:
+            "application/json":
+              schema: {"$ref": "#/components/schemas/Error"}
+      x-speakeasy-name-override: "send"
+  "/v1/broadcasts/{id}":
+    get:
+      tags:
+        - "broadcasts"
+      operationId: "getBroadcast"
+      summary: "Get broadcast"
+      description: "Get a specific broadcast by ID"
+      security:
+        - bearerAuth: []
+      parameters:
+        - schema:
+            type: "string"
+            format: "uuid"
+            example: "123e4567-e89b-12d3-a456-426614174000"
+          required: true
+          name: "id"
+          in: "path"
+      responses:
+        "200":
+          description: "Broadcast details"
+          content:
+            "application/json":
+              schema: {"$ref": "#/components/schemas/Broadcast"}
+        "404":
+          description: "Broadcast not found"
+          content:
+            "application/json":
+              schema: {"$ref": "#/components/schemas/Error"}
+      x-speakeasy-name-override: "get"
+  "/v1/segments":
+    post:
+      tags:
+        - "segments"
+      operationId: "createSegment"
+      summary: "Create segment"
+      description: "Create a new contact segment"
+      security:
+        - bearerAuth: []
+      requestBody:
+        content:
+          "application/json":
+            schema: {"$ref": "#/components/schemas/CreateSegmentRequest"}
+      responses:
+        "200":
+          description: "Segment created"
+          content:
+            "application/json":
+              schema: {"$ref": "#/components/schemas/Segment"}
+        "500":
+          description: "Server error"
+          content:
+            "application/json":
+              schema: {"$ref": "#/components/schemas/Error"}
+      x-speakeasy-name-override: "create"
+    get:
+      tags:
+        - "segments"
+      operationId: "listSegments"
+      summary: "List segments"
+      description: "Get all segments for your organization"
+      security:
+        - bearerAuth: []
+      responses:
+        "200":
+          description: "List of segments"
+          content:
+            "application/json":
+              schema:
+                type: "array"
+                items: {"$ref": "#/components/schemas/Segment"}
+        "500":
+          description: "Server error"
+          content:
+            "application/json":
+              schema: {"$ref": "#/components/schemas/Error"}
+      x-speakeasy-name-override: "list"
+  "/v1/segments/{id}/contacts/{contactId}":
+    post:
+      tags:
+        - "segments"
+      operationId: "addContactToSegment"
+      summary: "Add contact to segment"
+      description: "Add a contact to a segment"
+      security:
+        - bearerAuth: []
+      parameters:
+        - schema:
+            type: "string"
+            format: "uuid"
+            example: "123e4567-e89b-12d3-a456-426614174000"
+          required: true
+          name: "id"
+          in: "path"
+        - schema:
+            type: "string"
+            format: "uuid"
+            example: "123e4567-e89b-12d3-a456-426614174000"
+          required: true
+          name: "contactId"
+          in: "path"
+      responses:
+        "200":
+          description: "Contact added to segment"
+          content:
+            "application/json":
+              schema: {"$ref": "#/components/schemas/Success"}
+        "500":
+          description: "Server error"
+          content:
+            "application/json":
+              schema: {"$ref": "#/components/schemas/Error"}
+      x-speakeasy-name-override: "addContact"
+  "/v1/metrics/usage":
+    get:
+      tags:
+        - "metrics"
+      operationId: "getUsage"
+      summary: "Get usage metrics"
+      description: "Get usage metrics for a specified number of days"
+      security:
+        - bearerAuth: []
+      parameters:
+        - schema:
+            type: "string"
+            example: "30"
+          required: false
+          name: "days"
+          in: "query"
+      responses:
+        "200":
+          description: "Usage metrics"
+          content:
+            "application/json":
+              schema:
+                type: "array"
+                items: {"$ref": "#/components/schemas/UsageMetric"}
+        "500":
+          description: "Server error"
+          content:
+            "application/json":
+              schema: {"$ref": "#/components/schemas/Error"}
+  "/v1/metrics/emails":
+    get:
+      tags:
+        - "metrics"
+      operationId: "getEmailMetrics"
+      summary: "Get email metrics"
+      description: "Get aggregated email delivery metrics"
+      security:
+        - bearerAuth: []
+      responses:
+        "200":
+          description: "Email metrics"
+          content:
+            "application/json":
+              schema: {"$ref": "#/components/schemas/EmailMetrics"}
+        "500":
+          description: "Server error"
+          content:
+            "application/json":
+              schema: {"$ref": "#/components/schemas/Error"}
+      x-speakeasy-name-override: "getEmails"
+  "/v1/logs":
+    get:
+      tags:
+        - "logs"
+      operationId: "listLogs"
+      summary: "Get email logs"
+      description: "Get email events and logs with optional filtering"
+      security:
+        - bearerAuth: []
+      parameters:
+        - schema:
+            type: "string"
+            format: "uuid"
+          required: false
+          name: "email_id"
+          in: "query"
+        - schema:
+            type: "string"
+            example: "delivered"
+          required: false
+          name: "event_type"
+          in: "query"
+      responses:
+        "200":
+          description: "List of email events"
+          content:
+            "application/json":
+              schema:
+                type: "array"
+                items: {"$ref": "#/components/schemas/EmailEvent"}
+        "500":
+          description: "Server error"
+          content:
+            "application/json":
+              schema: {"$ref": "#/components/schemas/Error"}
+      x-speakeasy-name-override: "list"
+  "/v1/settings/organization":
+    get:
+      tags:
+        - "settings"
+      operationId: "getOrganization"
+      summary: "Get organization settings"
+      description: "Get your organization's settings"
+      security:
+        - bearerAuth: []
+      responses:
+        "200":
+          description: "Organization settings"
+          content:
+            "application/json":
+              schema: {"$ref": "#/components/schemas/Organization"}
+        "500":
+          description: "Server error"
+          content:
+            "application/json":
+              schema: {"$ref": "#/components/schemas/Error"}
+    put:
+      tags:
+        - "settings"
+      operationId: "updateOrganization"
+      summary: "Update organization settings"
+      description: "Update your organization's settings"
+      security:
+        - bearerAuth: []
+      requestBody:
+        content:
+          "application/json":
+            schema: {"$ref": "#/components/schemas/UpdateOrganizationRequest"}
+      responses:
+        "200":
+          description: "Organization updated"
+          content:
+            "application/json":
+              schema: {"$ref": "#/components/schemas/Organization"}
+        "500":
+          description: "Server error"
+          content:
+            "application/json":
+              schema: {"$ref": "#/components/schemas/Error"}
+  "/v1/settings/team":
+    get:
+      tags:
+        - "settings"
+      operationId: "getTeam"
+      summary: "Get team members"
+      description: "Get all team members in your organization"
+      security:
+        - bearerAuth: []
+      responses:
+        "200":
+          description: "List of team members"
+          content:
+            "application/json":
+              schema:
+                type: "array"
+                items: {"$ref": "#/components/schemas/TeamMember"}
+        "500":
+          description: "Server error"
+          content:
+            "application/json":
+              schema: {"$ref": "#/components/schemas/Error"}
+  "/v1/settings/unsubscribe":
+    get:
+      tags:
+        - "settings"
+      operationId: "getUnsubscribeSettings"
+      summary: "Get unsubscribe settings"
+      description: "Get unsubscribe page settings"
+      security:
+        - bearerAuth: []
+      responses:
+        "200":
+          description: "Unsubscribe settings"
+          content:
+            "application/json":
+              schema: {"$ref": "#/components/schemas/UnsubscribeSettings"}
+        "500":
+          description: "Server error"
+          content:
+            "application/json":
+              schema: {"$ref": "#/components/schemas/Error"}
+      x-speakeasy-name-override: "getUnsubscribe"
+    put:
+      tags:
+        - "settings"
+      operationId: "updateUnsubscribeSettings"
+      summary: "Update unsubscribe settings"
+      description: "Update unsubscribe page settings"
+      security:
+        - bearerAuth: []
+      requestBody:
+        content:
+          "application/json":
+            schema: {"$ref": "#/components/schemas/UpdateUnsubscribeSettingsRequest"}
+      responses:
+        "200":
+          description: "Unsubscribe settings updated"
+          content:
+            "application/json":
+              schema: {"$ref": "#/components/schemas/UnsubscribeSettings"}
+        "500":
+          description: "Server error"
+          content:
+            "application/json":
+              schema: {"$ref": "#/components/schemas/Error"}
+      x-speakeasy-name-override: "updateUnsubscribe"

@@ -1,0 +1,17 @@
+# SendEmailRequest
+
+
+## Fields
+
+| Field                                              | Type                                               | Required                                           | Description                                        | Example                                            |
+| -------------------------------------------------- | -------------------------------------------------- | -------------------------------------------------- | -------------------------------------------------- | -------------------------------------------------- |
+| `from_`                                            | *str*                                              | :heavy_check_mark:                                 | N/A                                                | sender@example.com                                 |
+| `to`                                               | [models.To](../models/to.md)                       | :heavy_check_mark:                                 | N/A                                                |                                                    |
+| `subject`                                          | *str*                                              | :heavy_check_mark:                                 | N/A                                                | Hello World                                        |
+| `html`                                             | *Optional[str]*                                    | :heavy_minus_sign:                                 | N/A                                                | <h1>Hello</h1>                                     |
+| `text`                                             | *Optional[str]*                                    | :heavy_minus_sign:                                 | N/A                                                | Hello                                              |
+| `template_id`                                      | *Optional[str]*                                    | :heavy_minus_sign:                                 | N/A                                                | 123e4567-e89b-12d3-a456-426614174000               |
+| `template_data`                                    | Dict[str, *Nullable[Any]*]                         | :heavy_minus_sign:                                 | N/A                                                | {<br/>"name": "John",<br/>"company": "Acme"<br/>}  |
+| `tags`                                             | Dict[str, *str*]                                   | :heavy_minus_sign:                                 | N/A                                                | {<br/>"campaign": "welcome",<br/>"source": "signup"<br/>} |
+| `attachments`                                      | List[[models.Attachment](../models/attachment.md)] | :heavy_minus_sign:                                 | N/A                                                |                                                    |
+| `reply_to`                                         | [Optional[models.ReplyTo]](../models/replyto.md)   | :heavy_minus_sign:                                 | N/A                                                |                                                    |

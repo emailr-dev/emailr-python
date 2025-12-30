@@ -1,0 +1,10 @@
+# SendEmailResponse
+
+
+## Fields
+
+| Field                                | Type                                 | Required                             | Description                          | Example                              |
+| ------------------------------------ | ------------------------------------ | ------------------------------------ | ------------------------------------ | ------------------------------------ |
+| `success`                            | *bool*                               | :heavy_check_mark:                   | N/A                                  | true                                 |
+| `message_id`                         | *str*                                | :heavy_check_mark:                   | N/A                                  | 123e4567-e89b-12d3-a456-426614174000 |
+| `recipients`                         | *int*                                | :heavy_check_mark:                   | N/A                                  | 1                                    |

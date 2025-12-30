@@ -1,0 +1,16 @@
+# WebhookDelivery
+
+
+## Fields
+
+| Field                                                                | Type                                                                 | Required                                                             | Description                                                          |
+| -------------------------------------------------------------------- | -------------------------------------------------------------------- | -------------------------------------------------------------------- | -------------------------------------------------------------------- |
+| `id`                                                                 | *str*                                                                | :heavy_check_mark:                                                   | N/A                                                                  |
+| `webhook_id`                                                         | *str*                                                                | :heavy_check_mark:                                                   | N/A                                                                  |
+| `event_type`                                                         | *str*                                                                | :heavy_check_mark:                                                   | N/A                                                                  |
+| `payload`                                                            | Dict[str, *Nullable[Any]*]                                           | :heavy_check_mark:                                                   | N/A                                                                  |
+| `response_status`                                                    | *Nullable[float]*                                                    | :heavy_check_mark:                                                   | N/A                                                                  |
+| `response_body`                                                      | *Nullable[str]*                                                      | :heavy_check_mark:                                                   | N/A                                                                  |
+| `attempt_count`                                                      | *float*                                                              | :heavy_check_mark:                                                   | N/A                                                                  |
+| `delivered_at`                                                       | [date](https://docs.python.org/3/library/datetime.html#date-objects) | :heavy_check_mark:                                                   | N/A                                                                  |
+| `created_at`                                                         | [date](https://docs.python.org/3/library/datetime.html#date-objects) | :heavy_check_mark:                                                   | N/A                                                                  |

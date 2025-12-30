@@ -1,0 +1,39 @@
+speakeasyVersion: 1.680.11
+sources:
+    Emailr API:
+        sourceNamespace: emailr-api
+        sourceRevisionDigest: sha256:5f79157c5d406a27546248f2a05732dfc4e55e683ffd9ae0a57f33020d380755
+        sourceBlobDigest: sha256:e33dfe7038efa22ed6bc173c6fab3e08bccfb61731f424ed495aab29a88e17e0
+        tags:
+            - latest
+            - 1.0.0
+targets:
+    emailr:
+        source: Emailr API
+        sourceNamespace: emailr-api
+        sourceRevisionDigest: sha256:5f79157c5d406a27546248f2a05732dfc4e55e683ffd9ae0a57f33020d380755
+        sourceBlobDigest: sha256:e33dfe7038efa22ed6bc173c6fab3e08bccfb61731f424ed495aab29a88e17e0
+        codeSamplesNamespace: emailr-api-python-code-samples
+        codeSamplesRevisionDigest: sha256:6b70f5c7df5630ae5821c1a64ba65916e4cd4da108955f7e5ae284a588536424
+workflow:
+    workflowVersion: 1.0.0
+    speakeasyVersion: latest
+    sources:
+        Emailr API:
+            inputs:
+                - location: https://api.emailr.dev/openapi.json
+            overlays:
+                - location: .speakeasy/speakeasy-modifications-overlay.yaml
+            output: .speakeasy/out.openapi.yaml
+            registry:
+                location: registry.speakeasyapi.dev/hormo/emailr/emailr-api
+    targets:
+        emailr:
+            target: python
+            source: Emailr API
+            codeSamples:
+                registry:
+                    location: registry.speakeasyapi.dev/hormo/emailr/emailr-api-python-code-samples
+                labelOverride:
+                    fixedValue: Python (SDK)
+                blocking: false
