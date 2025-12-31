@@ -13,6 +13,9 @@ targets:
     emailr:
         target: python
         source: Emailr API
+        publish:
+            pypi:
+                token: $pypi_token
         codeSamples:
             registry:
                 location: registry.speakeasyapi.dev/hormo/emailr/emailr-api-python-code-samples
