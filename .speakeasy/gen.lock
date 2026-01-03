@@ -5,12 +5,15 @@ management:
   docVersion: 1.0.0
   speakeasyVersion: 1.680.11
   generationVersion: 2.788.15
-  releaseVersion: 0.1.0
-  configChecksum: f042eca43af4068a83f2384ecb1208d1
+  releaseVersion: 0.1.1
+  configChecksum: 33f931d75168bf4be8468fcde9fc51a4
+  repoURL: https://github.com/emailr-dev/emailr-python.git
+  installationURL: https://github.com/emailr-dev/emailr-python.git
+  published: true
 persistentEdits:
-  generation_id: 65c7eade-ae68-43eb-b2dc-a9b6902773d0
-  pristine_commit_hash: 7d56587b34d9e27c297664dc5fbd970bc75d9746
-  pristine_tree_hash: 179798899c5802fc484af0525fb146c9b7f5740e
+  generation_id: 94e704a3-2e51-4765-a0f1-54c366932917
+  pristine_commit_hash: 92bb246604e98de6157e582095a03818e4b64375
+  pristine_tree_hash: 3cc05d6993feb77221bee15788d048c7856a10d6
 features:
   python:
     additionalDependencies: 1.0.0
@@ -37,8 +40,8 @@ features:
 trackedFiles:
   .devcontainer/README.md:
     id: b170c0f184ac
-    last_write_checksum: sha1:3c63dfd4dcea8df0d4add09e975a6887e6da4aab
-    pristine_git_object: 396929ab2e57cf09dd25ec83bd4496f733b95701
+    last_write_checksum: sha1:ddbcc2e15b0fc66a3671fa33912dacd697bebdeb
+    pristine_git_object: 24c1be5737579887c232741fbcb8e82ccc7e3608
   .devcontainer/devcontainer.json:
     id: b34062a34eb1
     last_write_checksum: sha1:94309e8c8eab5ab063986bf625f513a59825e947
@@ -397,12 +400,16 @@ trackedFiles:
     pristine_git_object: 4ed1728f357bbf533e76a22639c03e4b7fe61d92
   pyproject.toml:
     id: 5d07e7d72637
-    last_write_checksum: sha1:c4f2c8008fed0ebab0495f89550b95da6acccfcf
-    pristine_git_object: 3369072a6e7eabe46fd72ff4c49c40c5ad84abe7
+    last_write_checksum: sha1:5cbbf622523a1c59a9a78f55345c80a7babecf7c
+    pristine_git_object: 17f4c0d0b523db787c684d64731d41d85e84eb6e
+  scripts/prepare_readme.py:
+    id: e0c5957a6035
+    last_write_checksum: sha1:24b3303349b920eb0900cde61d9c78b029d1c0aa
+    pristine_git_object: 294831545da9928d0e589660f77c40cf92457337
   scripts/publish.sh:
     id: fe273b08f514
-    last_write_checksum: sha1:adc9b741c12ad1591ab4870eabe20f0d0a86cd1a
-    pristine_git_object: ef28dc10c60d7d6a4bac0c6a1e9caba36b471861
+    last_write_checksum: sha1:b290b25b36dca3d5eb1a2e66a2e1bcf2e7326cf3
+    pristine_git_object: c35748f360329c2bc370e9b189f49b1a360b2c48
   src/emailr/__init__.py:
     id: 85be6106be08
     last_write_checksum: sha1:da077c0bdfcef64a4a5aea91a17292f72fa2b088
@@ -421,8 +428,8 @@ trackedFiles:
     pristine_git_object: 15ecf8779c947b0fa61f22c9e9cf14d97796b0d2
   src/emailr/_version.py:
     id: d20ef6c7ec59
-    last_write_checksum: sha1:506f4237655795f0e8e3e113734fba123a2ee068
-    pristine_git_object: 84f4068b6e536ddb4711f1bae0d08dd703285143
+    last_write_checksum: sha1:c41d5c5de49ca96f1bb07ef0ff4e68579acac6ec
+    pristine_git_object: 64000590445aaf312f84a74fa3785cbed701f387
   src/emailr/api_keys.py:
     id: 7f89b0a92c62
     last_write_checksum: sha1:1c76dfcb12ac640082fddb43f38e99c1d76795d4
@@ -1256,3 +1263,83 @@ examples:
         "500":
           application/json: {"error": "An error occurred", "code": "VALIDATION_ERROR"}
 examplesVersion: 1.0.2
+releaseNotes: |
+  ## Python SDK Changes:
+  * `emailr.emails.send()`: **Added**
+  * `emailr.emails.get()`: **Added**
+  * `emailr.emails.list()`: **Added**
+  * `emailr.contacts.create()`: **Added**
+  * `emailr.contacts.list()`: **Added**
+  * `emailr.contacts.bulk_create()`: **Added**
+  * `emailr.contacts.get()`: **Added**
+  * `emailr.contacts.update()`: **Added**
+  * `emailr.contacts.delete()`: **Added**
+  * `emailr.templates.create()`: **Added**
+  * `emailr.templates.list()`: **Added**
+  * `emailr.templates.get()`: **Added**
+  * `emailr.templates.update()`: **Added**
+  * `emailr.templates.delete()`: **Added**
+  * `emailr.domains.add()`: **Added**
+  * `emailr.domains.list()`: **Added**
+  * `emailr.domains.verify()`: **Added**
+  * `emailr.domains.get_dns_status()`: **Added**
+  * `emailr.domains.update()`: **Added**
+  * `emailr.domains.delete()`: **Added**
+  * `emailr.api-keys.create()`: **Added**
+  * `emailr.api-keys.list()`: **Added**
+  * `emailr.api-keys.revoke()`: **Added**
+  * `emailr.webhooks.create()`: **Added**
+  * `emailr.webhooks.list()`: **Added**
+  * `emailr.webhooks.toggle()`: **Added**
+  * `emailr.webhooks.delete()`: **Added**
+  * `emailr.webhooks.list_deliveries()`: **Added**
+  * `emailr.broadcasts.create()`: **Added**
+  * `emailr.broadcasts.list()`: **Added**
+  * `emailr.broadcasts.send()`: **Added**
+  * `emailr.broadcasts.get()`: **Added**
+  * `emailr.segments.create()`: **Added**
+  * `emailr.segments.list()`: **Added**
+  * `emailr.segments.add_contact()`: **Added**
+  * `emailr.metrics.get_emails()`: **Added**
+  * `emailr.logs.list()`: **Added**
+  * `emailr.settings.get_unsubscribe()`: **Added**
+  * `emailr.settings.update_unsubscribe()`: **Added**
+  * `emailr.emails.send_email()`: **Deleted** **Breaking** :warning:
+  * `emailr.emails.get_email()`: **Deleted** **Breaking** :warning:
+  * `emailr.emails.list_emails()`: **Deleted** **Breaking** :warning:
+  * `emailr.contacts.list_contacts()`: **Deleted** **Breaking** :warning:
+  * `emailr.contacts.create_contact()`: **Deleted** **Breaking** :warning:
+  * `emailr.contacts.bulk_create_contacts()`: **Deleted** **Breaking** :warning:
+  * `emailr.contacts.get_contact()`: **Deleted** **Breaking** :warning:
+  * `emailr.contacts.update_contact()`: **Deleted** **Breaking** :warning:
+  * `emailr.contacts.delete_contact()`: **Deleted** **Breaking** :warning:
+  * `emailr.templates.list_templates()`: **Deleted** **Breaking** :warning:
+  * `emailr.templates.create_template()`: **Deleted** **Breaking** :warning:
+  * `emailr.templates.get_template()`: **Deleted** **Breaking** :warning:
+  * `emailr.templates.update_template()`: **Deleted** **Breaking** :warning:
+  * `emailr.templates.delete_template()`: **Deleted** **Breaking** :warning:
+  * `emailr.domains.list_domains()`: **Deleted** **Breaking** :warning:
+  * `emailr.domains.add_domain()`: **Deleted** **Breaking** :warning:
+  * `emailr.domains.verify_domain()`: **Deleted** **Breaking** :warning:
+  * `emailr.domains.get_domain_dns_status()`: **Deleted** **Breaking** :warning:
+  * `emailr.domains.delete_domain()`: **Deleted** **Breaking** :warning:
+  * `emailr.domains.update_domain()`: **Deleted** **Breaking** :warning:
+  * `emailr.api-keys.list_api_keys()`: **Deleted** **Breaking** :warning:
+  * `emailr.api-keys.create_api_key()`: **Deleted** **Breaking** :warning:
+  * `emailr.api-keys.revoke_api_key()`: **Deleted** **Breaking** :warning:
+  * `emailr.webhooks.list_webhooks()`: **Deleted** **Breaking** :warning:
+  * `emailr.webhooks.create_webhook()`: **Deleted** **Breaking** :warning:
+  * `emailr.webhooks.toggle_webhook()`: **Deleted** **Breaking** :warning:
+  * `emailr.webhooks.delete_webhook()`: **Deleted** **Breaking** :warning:
+  * `emailr.webhooks.get_webhook_deliveries()`: **Deleted** **Breaking** :warning:
+  * `emailr.broadcasts.list_broadcasts()`: **Deleted** **Breaking** :warning:
+  * `emailr.broadcasts.create_broadcast()`: **Deleted** **Breaking** :warning:
+  * `emailr.broadcasts.send_broadcast()`: **Deleted** **Breaking** :warning:
+  * `emailr.broadcasts.get_broadcast()`: **Deleted** **Breaking** :warning:
+  * `emailr.segments.list_segments()`: **Deleted** **Breaking** :warning:
+  * `emailr.segments.create_segment()`: **Deleted** **Breaking** :warning:
+  * `emailr.segments.add_contact_to_segment()`: **Deleted** **Breaking** :warning:
+  * `emailr.metrics.get_email_metrics()`: **Deleted** **Breaking** :warning:
+  * `emailr.logs.list_logs()`: **Deleted** **Breaking** :warning:
+  * `emailr.settings.get_unsubscribe_settings()`: **Deleted** **Breaking** :warning:
+  * `emailr.settings.update_unsubscribe_settings()`: **Deleted** **Breaking** :warning:
