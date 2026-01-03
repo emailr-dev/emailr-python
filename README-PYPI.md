@@ -19,21 +19,21 @@ Developer-friendly & type-safe Python SDK specifically catered to leverage *emai
 <!-- Start Table of Contents [toc] -->
 ## Table of Contents
 <!-- $toc-max-depth=2 -->
-* [emailr](#emailr)
-  * [SDK Installation](#sdk-installation)
-  * [IDE Support](#ide-support)
-  * [SDK Example Usage](#sdk-example-usage)
-  * [Authentication](#authentication)
-  * [Available Resources and Operations](#available-resources-and-operations)
-  * [Retries](#retries)
-  * [Error Handling](#error-handling)
-  * [Server Selection](#server-selection)
-  * [Custom HTTP Client](#custom-http-client)
-  * [Resource Management](#resource-management)
-  * [Debugging](#debugging)
-* [Development](#development)
-  * [Maturity](#maturity)
-  * [Contributions](#contributions)
+* [emailr](https://github.com/emailr-dev/emailr-python/blob/master/#emailr)
+  * [SDK Installation](https://github.com/emailr-dev/emailr-python/blob/master/#sdk-installation)
+  * [IDE Support](https://github.com/emailr-dev/emailr-python/blob/master/#ide-support)
+  * [SDK Example Usage](https://github.com/emailr-dev/emailr-python/blob/master/#sdk-example-usage)
+  * [Authentication](https://github.com/emailr-dev/emailr-python/blob/master/#authentication)
+  * [Available Resources and Operations](https://github.com/emailr-dev/emailr-python/blob/master/#available-resources-and-operations)
+  * [Retries](https://github.com/emailr-dev/emailr-python/blob/master/#retries)
+  * [Error Handling](https://github.com/emailr-dev/emailr-python/blob/master/#error-handling)
+  * [Server Selection](https://github.com/emailr-dev/emailr-python/blob/master/#server-selection)
+  * [Custom HTTP Client](https://github.com/emailr-dev/emailr-python/blob/master/#custom-http-client)
+  * [Resource Management](https://github.com/emailr-dev/emailr-python/blob/master/#resource-management)
+  * [Debugging](https://github.com/emailr-dev/emailr-python/blob/master/#debugging)
+* [Development](https://github.com/emailr-dev/emailr-python/blob/master/#development)
+  * [Maturity](https://github.com/emailr-dev/emailr-python/blob/master/#maturity)
+  * [Contributions](https://github.com/emailr-dev/emailr-python/blob/master/#contributions)
 
 <!-- End Table of Contents [toc] -->
 
@@ -275,81 +275,81 @@ with Emailr(
 <details open>
 <summary>Available methods</summary>
 
-### [ApiKeys](docs/sdks/apikeys/README.md)
+### [ApiKeys](https://github.com/emailr-dev/emailr-python/blob/master/docs/sdks/apikeys/README.md)
 
-* [create](docs/sdks/apikeys/README.md#create) - Create API key
-* [list](docs/sdks/apikeys/README.md#list) - List API keys
-* [revoke](docs/sdks/apikeys/README.md#revoke) - Revoke API key
+* [create](https://github.com/emailr-dev/emailr-python/blob/master/docs/sdks/apikeys/README.md#create) - Create API key
+* [list](https://github.com/emailr-dev/emailr-python/blob/master/docs/sdks/apikeys/README.md#list) - List API keys
+* [revoke](https://github.com/emailr-dev/emailr-python/blob/master/docs/sdks/apikeys/README.md#revoke) - Revoke API key
 
-### [Broadcasts](docs/sdks/broadcasts/README.md)
+### [Broadcasts](https://github.com/emailr-dev/emailr-python/blob/master/docs/sdks/broadcasts/README.md)
 
-* [create](docs/sdks/broadcasts/README.md#create) - Create broadcast
-* [list](docs/sdks/broadcasts/README.md#list) - List broadcasts
-* [send](docs/sdks/broadcasts/README.md#send) - Send broadcast
-* [get](docs/sdks/broadcasts/README.md#get) - Get broadcast
+* [create](https://github.com/emailr-dev/emailr-python/blob/master/docs/sdks/broadcasts/README.md#create) - Create broadcast
+* [list](https://github.com/emailr-dev/emailr-python/blob/master/docs/sdks/broadcasts/README.md#list) - List broadcasts
+* [send](https://github.com/emailr-dev/emailr-python/blob/master/docs/sdks/broadcasts/README.md#send) - Send broadcast
+* [get](https://github.com/emailr-dev/emailr-python/blob/master/docs/sdks/broadcasts/README.md#get) - Get broadcast
 
-### [Contacts](docs/sdks/contacts/README.md)
+### [Contacts](https://github.com/emailr-dev/emailr-python/blob/master/docs/sdks/contacts/README.md)
 
-* [create](docs/sdks/contacts/README.md#create) - Create a contact
-* [list](docs/sdks/contacts/README.md#list) - List contacts
-* [bulk_create](docs/sdks/contacts/README.md#bulk_create) - Bulk create contacts
-* [get](docs/sdks/contacts/README.md#get) - Get contact
-* [update](docs/sdks/contacts/README.md#update) - Update contact
-* [delete](docs/sdks/contacts/README.md#delete) - Delete contact
+* [create](https://github.com/emailr-dev/emailr-python/blob/master/docs/sdks/contacts/README.md#create) - Create a contact
+* [list](https://github.com/emailr-dev/emailr-python/blob/master/docs/sdks/contacts/README.md#list) - List contacts
+* [bulk_create](https://github.com/emailr-dev/emailr-python/blob/master/docs/sdks/contacts/README.md#bulk_create) - Bulk create contacts
+* [get](https://github.com/emailr-dev/emailr-python/blob/master/docs/sdks/contacts/README.md#get) - Get contact
+* [update](https://github.com/emailr-dev/emailr-python/blob/master/docs/sdks/contacts/README.md#update) - Update contact
+* [delete](https://github.com/emailr-dev/emailr-python/blob/master/docs/sdks/contacts/README.md#delete) - Delete contact
 
-### [Domains](docs/sdks/domains/README.md)
+### [Domains](https://github.com/emailr-dev/emailr-python/blob/master/docs/sdks/domains/README.md)
 
-* [add](docs/sdks/domains/README.md#add) - Add domain
-* [list](docs/sdks/domains/README.md#list) - List domains
-* [verify](docs/sdks/domains/README.md#verify) - Verify domain
-* [get_dns_status](docs/sdks/domains/README.md#get_dns_status) - Get DNS status
-* [update](docs/sdks/domains/README.md#update) - Update domain
-* [delete](docs/sdks/domains/README.md#delete) - Delete domain
+* [add](https://github.com/emailr-dev/emailr-python/blob/master/docs/sdks/domains/README.md#add) - Add domain
+* [list](https://github.com/emailr-dev/emailr-python/blob/master/docs/sdks/domains/README.md#list) - List domains
+* [verify](https://github.com/emailr-dev/emailr-python/blob/master/docs/sdks/domains/README.md#verify) - Verify domain
+* [get_dns_status](https://github.com/emailr-dev/emailr-python/blob/master/docs/sdks/domains/README.md#get_dns_status) - Get DNS status
+* [update](https://github.com/emailr-dev/emailr-python/blob/master/docs/sdks/domains/README.md#update) - Update domain
+* [delete](https://github.com/emailr-dev/emailr-python/blob/master/docs/sdks/domains/README.md#delete) - Delete domain
 
-### [Emails](docs/sdks/emails/README.md)
+### [Emails](https://github.com/emailr-dev/emailr-python/blob/master/docs/sdks/emails/README.md)
 
-* [send](docs/sdks/emails/README.md#send) - Send an email
-* [get](docs/sdks/emails/README.md#get) - Get email by ID
-* [list](docs/sdks/emails/README.md#list) - List emails
+* [send](https://github.com/emailr-dev/emailr-python/blob/master/docs/sdks/emails/README.md#send) - Send an email
+* [get](https://github.com/emailr-dev/emailr-python/blob/master/docs/sdks/emails/README.md#get) - Get email by ID
+* [list](https://github.com/emailr-dev/emailr-python/blob/master/docs/sdks/emails/README.md#list) - List emails
 
-### [Logs](docs/sdks/logs/README.md)
+### [Logs](https://github.com/emailr-dev/emailr-python/blob/master/docs/sdks/logs/README.md)
 
-* [list](docs/sdks/logs/README.md#list) - Get email logs
+* [list](https://github.com/emailr-dev/emailr-python/blob/master/docs/sdks/logs/README.md#list) - Get email logs
 
-### [Metrics](docs/sdks/metrics/README.md)
+### [Metrics](https://github.com/emailr-dev/emailr-python/blob/master/docs/sdks/metrics/README.md)
 
-* [get_usage](docs/sdks/metrics/README.md#get_usage) - Get usage metrics
-* [get_emails](docs/sdks/metrics/README.md#get_emails) - Get email metrics
+* [get_usage](https://github.com/emailr-dev/emailr-python/blob/master/docs/sdks/metrics/README.md#get_usage) - Get usage metrics
+* [get_emails](https://github.com/emailr-dev/emailr-python/blob/master/docs/sdks/metrics/README.md#get_emails) - Get email metrics
 
-### [Segments](docs/sdks/segments/README.md)
+### [Segments](https://github.com/emailr-dev/emailr-python/blob/master/docs/sdks/segments/README.md)
 
-* [create](docs/sdks/segments/README.md#create) - Create segment
-* [list](docs/sdks/segments/README.md#list) - List segments
-* [add_contact](docs/sdks/segments/README.md#add_contact) - Add contact to segment
+* [create](https://github.com/emailr-dev/emailr-python/blob/master/docs/sdks/segments/README.md#create) - Create segment
+* [list](https://github.com/emailr-dev/emailr-python/blob/master/docs/sdks/segments/README.md#list) - List segments
+* [add_contact](https://github.com/emailr-dev/emailr-python/blob/master/docs/sdks/segments/README.md#add_contact) - Add contact to segment
 
-### [Settings](docs/sdks/settings/README.md)
+### [Settings](https://github.com/emailr-dev/emailr-python/blob/master/docs/sdks/settings/README.md)
 
-* [get_organization](docs/sdks/settings/README.md#get_organization) - Get organization settings
-* [update_organization](docs/sdks/settings/README.md#update_organization) - Update organization settings
-* [get_team](docs/sdks/settings/README.md#get_team) - Get team members
-* [get_unsubscribe](docs/sdks/settings/README.md#get_unsubscribe) - Get unsubscribe settings
-* [update_unsubscribe](docs/sdks/settings/README.md#update_unsubscribe) - Update unsubscribe settings
+* [get_organization](https://github.com/emailr-dev/emailr-python/blob/master/docs/sdks/settings/README.md#get_organization) - Get organization settings
+* [update_organization](https://github.com/emailr-dev/emailr-python/blob/master/docs/sdks/settings/README.md#update_organization) - Update organization settings
+* [get_team](https://github.com/emailr-dev/emailr-python/blob/master/docs/sdks/settings/README.md#get_team) - Get team members
+* [get_unsubscribe](https://github.com/emailr-dev/emailr-python/blob/master/docs/sdks/settings/README.md#get_unsubscribe) - Get unsubscribe settings
+* [update_unsubscribe](https://github.com/emailr-dev/emailr-python/blob/master/docs/sdks/settings/README.md#update_unsubscribe) - Update unsubscribe settings
 
-### [Templates](docs/sdks/templates/README.md)
+### [Templates](https://github.com/emailr-dev/emailr-python/blob/master/docs/sdks/templates/README.md)
 
-* [create](docs/sdks/templates/README.md#create) - Create a template
-* [list](docs/sdks/templates/README.md#list) - List templates
-* [get](docs/sdks/templates/README.md#get) - Get template
-* [update](docs/sdks/templates/README.md#update) - Update template
-* [delete](docs/sdks/templates/README.md#delete) - Delete template
+* [create](https://github.com/emailr-dev/emailr-python/blob/master/docs/sdks/templates/README.md#create) - Create a template
+* [list](https://github.com/emailr-dev/emailr-python/blob/master/docs/sdks/templates/README.md#list) - List templates
+* [get](https://github.com/emailr-dev/emailr-python/blob/master/docs/sdks/templates/README.md#get) - Get template
+* [update](https://github.com/emailr-dev/emailr-python/blob/master/docs/sdks/templates/README.md#update) - Update template
+* [delete](https://github.com/emailr-dev/emailr-python/blob/master/docs/sdks/templates/README.md#delete) - Delete template
 
-### [Webhooks](docs/sdks/webhooks/README.md)
+### [Webhooks](https://github.com/emailr-dev/emailr-python/blob/master/docs/sdks/webhooks/README.md)
 
-* [create](docs/sdks/webhooks/README.md#create) - Create webhook
-* [list](docs/sdks/webhooks/README.md#list) - List webhooks
-* [toggle](docs/sdks/webhooks/README.md#toggle) - Toggle webhook
-* [delete](docs/sdks/webhooks/README.md#delete) - Delete webhook
-* [list_deliveries](docs/sdks/webhooks/README.md#list_deliveries) - Get webhook deliveries
+* [create](https://github.com/emailr-dev/emailr-python/blob/master/docs/sdks/webhooks/README.md#create) - Create webhook
+* [list](https://github.com/emailr-dev/emailr-python/blob/master/docs/sdks/webhooks/README.md#list) - List webhooks
+* [toggle](https://github.com/emailr-dev/emailr-python/blob/master/docs/sdks/webhooks/README.md#toggle) - Toggle webhook
+* [delete](https://github.com/emailr-dev/emailr-python/blob/master/docs/sdks/webhooks/README.md#delete) - Delete webhook
+* [list_deliveries](https://github.com/emailr-dev/emailr-python/blob/master/docs/sdks/webhooks/README.md#list_deliveries) - Get webhook deliveries
 
 </details>
 <!-- End Available Resources and Operations [operations] -->
@@ -455,7 +455,7 @@ with Emailr(
 <!-- Start Error Handling [errors] -->
 ## Error Handling
 
-[`EmailrError`](./src/emailr/errors/emailrerror.py) is the base class for all HTTP error responses. It has the following properties:
+[`EmailrError`](https://github.com/emailr-dev/emailr-python/blob/master/./src/emailr/errors/emailrerror.py) is the base class for all HTTP error responses. It has the following properties:
 
 | Property           | Type             | Description                                                                             |
 | ------------------ | ---------------- | --------------------------------------------------------------------------------------- |
@@ -464,7 +464,7 @@ with Emailr(
 | `err.headers`      | `httpx.Headers`  | HTTP response headers                                                                   |
 | `err.body`         | `str`            | HTTP body. Can be empty string if no body is returned.                                  |
 | `err.raw_response` | `httpx.Response` | Raw HTTP response                                                                       |
-| `err.data`         |                  | Optional. Some errors may contain structured data. [See Error Classes](#error-classes). |
+| `err.data`         |                  | Optional. Some errors may contain structured data. [See Error Classes](https://github.com/emailr-dev/emailr-python/blob/master/#error-classes). |
 
 ### Example
 ```python
@@ -528,8 +528,8 @@ with Emailr(
 
 ### Error Classes
 **Primary errors:**
-* [`EmailrError`](./src/emailr/errors/emailrerror.py): The base class for HTTP error responses.
-  * [`Error`](./src/emailr/errors/error.py): Generic error.
+* [`EmailrError`](https://github.com/emailr-dev/emailr-python/blob/master/./src/emailr/errors/emailrerror.py): The base class for HTTP error responses.
+  * [`Error`](https://github.com/emailr-dev/emailr-python/blob/master/./src/emailr/errors/error.py): Generic error.
 
 <details><summary>Less common errors (5)</summary>
 
@@ -541,8 +541,8 @@ with Emailr(
     * [`httpx.TimeoutException`](https://www.python-httpx.org/exceptions/#httpx.TimeoutException): HTTP request timed out.
 
 
-**Inherit from [`EmailrError`](./src/emailr/errors/emailrerror.py)**:
-* [`ResponseValidationError`](./src/emailr/errors/responsevalidationerror.py): Type mismatch between the response data and the expected Pydantic model. Provides access to the Pydantic validation error via the `cause` attribute.
+**Inherit from [`EmailrError`](https://github.com/emailr-dev/emailr-python/blob/master/./src/emailr/errors/emailrerror.py)**:
+* [`ResponseValidationError`](https://github.com/emailr-dev/emailr-python/blob/master/./src/emailr/errors/responsevalidationerror.py): Type mismatch between the response data and the expected Pydantic model. Provides access to the Pydantic validation error via the `cause` attribute.
 
 </details>
 <!-- End Error Handling [errors] -->
