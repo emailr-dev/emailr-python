@@ -28,6 +28,18 @@ tags:
     description: "Email event logs"
   - name: "settings"
     description: "Organization settings"
+  - name: "smtp"
+    description: "SMTP credentials for email sending"
+  - name: "billing"
+    description: "Subscription billing and usage"
+  - name: "topics"
+    description: "Broadcast topic management"
+  - name: "unsubscribe"
+    description: "Email unsubscribe management"
+  - name: "integrations"
+    description: "OAuth integrations (Supabase, Vercel)"
+  - name: "contact-sync"
+    description: "Third-party contact synchronization"
 components:
   securitySchemes:
     "bearerAuth":
@@ -102,6 +114,7 @@ components:
         "from":
           type: "string"
           format: "email"
+          description: "Sender email. Required if not using a template with from_email set."
           example: "sender@example.com"
         "to":
           anyOf:
@@ -116,6 +129,7 @@ components:
         "subject":
           type: "string"
           minLength: 1
+          description: "Email subject. Required if not using a template."
           example: "Hello World"
         "html":
           type: "string"
@@ -126,11 +140,13 @@ components:
         "template_id":
           type: "string"
           format: "uuid"
+          description: "Template ID. When provided, template values are used for subject, html, text, from, reply_to, and preview_text."
           example: "123e4567-e89b-12d3-a456-426614174000"
         "template_data":
           type: "object"
           additionalProperties:
             nullable: true
+          description: "Variables to render in the template. Must include all variables defined in the template."
           example: {"name": "John", "company": "Acme"}
         "tags":
           type: "object"
@@ -141,10 +157,17 @@ components:
           type: "array"
           items: {"$ref": "#/components/schemas/Attachment"}
         "replyTo": {"$ref": "#/components/schemas/ReplyTo"}
+        "reply_to_email":
+          type: "string"
+          format: "email"
+          description: "Reply-To email address. Overrides template reply_to if provided."
+          example: "support@example.com"
+        "preview_text":
+          type: "string"
+          description: "Preview text (preheader). Overrides template preview_text if provided."
+          example: "Check out our latest updates..."
       required:
-        - "from"
         - "to"
-        - "subject"
     "Email":
       type: "object"
       properties:
@@ -429,6 +452,15 @@ components:
           nullable: true
           items:
             type: "string"
+        "from_email":
+          type: "string"
+          nullable: true
+        "reply_to":
+          type: "string"
+          nullable: true
+        "preview_text":
+          type: "string"
+          nullable: true
         "created_by":
           type: "string"
           nullable: true
@@ -447,6 +479,9 @@ components:
         - "html_content"
         - "text_content"
         - "variables"
+        - "from_email"
+        - "reply_to"
+        - "preview_text"
         - "created_by"
         - "created_at"
         - "updated_at"
@@ -472,6 +507,20 @@ components:
           items:
             type: "string"
           example: ["name", "company"]
+        "from_email":
+          type: "string"
+          format: "email"
+          description: "Default from email address. Must match a verified domain."
+          example: "hello@example.com"
+        "reply_to":
+          type: "string"
+          format: "email"
+          description: "Reply-To email address for template-based emails."
+          example: "support@example.com"
+        "preview_text":
+          type: "string"
+          description: "Preview text (preheader) shown in email clients."
+          example: "Check out what's new..."
       required:
         - "name"
         - "subject"
@@ -1246,6 +1295,47 @@ components:
         "one_click_enabled":
           type: "boolean"
           example: true
+    "SmtpCredentials":
+      type: "object"
+      properties:
+        "server":
+          type: "string"
+          example: "email-smtp.us-east-1.amazonaws.com"
+        "ports":
+          type: "object"
+          properties:
+            "tls":
+              type: "number"
+              example: 587
+            "ssl":
+              type: "number"
+              example: 465
+            "tls_alternative":
+              type: "number"
+              example: 2587
+          required:
+            - "tls"
+            - "ssl"
+            - "tls_alternative"
+        "username":
+          type: "string"
+          example: "AKIAIOSFODNN7EXAMPLE"
+        "password":
+          type: "string"
+          example: "your-api-key"
+        "encryption":
+          type: "string"
+          example: "TLS (port 587) or SSL (port 465)"
+        "note":
+          type: "string"
+          example: "Use your API key as the password. Rotate your API key if compromised."
+      required:
+        - "server"
+        - "ports"
+        - "username"
+        - "password"
+        - "encryption"
+        - "note"
 paths:
   "/v1/emails/send":
     post:
@@ -2493,3 +2583,859 @@ paths:
             "application/json":
               schema: {"$ref": "#/components/schemas/Error"}
       x-speakeasy-name-override: "updateUnsubscribe"
+  "/v1/smtp/credentials":
+    get:
+      tags:
+        - "smtp"
+      operationId: "getSmtpCredentials"
+      summary: "Get SMTP credentials"
+      description: "Get SMTP server credentials for sending emails. The password is your API key."
+      responses:
+        "200":
+          description: "SMTP credentials"
+          content:
+            "application/json":
+              schema: {"$ref": "#/components/schemas/SmtpCredentials"}
+        "401":
+          description: "Unauthorized"
+          content:
+            "application/json":
+              schema: {"$ref": "#/components/schemas/Error"}
+  "/v1/billing/checkout":
+    post:
+      tags:
+        - "billing"
+      security:
+        - bearerAuth: []
+      requestBody:
+        content:
+          "application/json":
+            schema:
+              type: "object"
+              properties:
+                "priceId":
+                  type: "string"
+                  description: "Stripe Price ID"
+                "planType":
+                  type: "string"
+                  enum:
+                    - "transactional"
+                    - "marketing"
+              required:
+                - "priceId"
+                - "planType"
+      responses:
+        "200":
+          description: "Checkout session created"
+          content:
+            "application/json":
+              schema:
+                type: "object"
+                properties:
+                  "sessionId":
+                    type: "string"
+                  "url":
+                    type: "string"
+                required:
+                  - "sessionId"
+                  - "url"
+        "401":
+          description: "Unauthorized"
+          content:
+            "application/json":
+              schema:
+                type: "object"
+                properties:
+                  "error":
+                    type: "string"
+                required:
+                  - "error"
+  "/v1/billing/portal":
+    post:
+      tags:
+        - "billing"
+      security:
+        - bearerAuth: []
+      responses:
+        "200":
+          description: "Portal session created"
+          content:
+            "application/json":
+              schema:
+                type: "object"
+                properties:
+                  "url":
+                    type: "string"
+                required:
+                  - "url"
+        "401":
+          description: "Unauthorized"
+          content:
+            "application/json":
+              schema:
+                type: "object"
+                properties:
+                  "error":
+                    type: "string"
+                required:
+                  - "error"
+  "/v1/billing/usage":
+    get:
+      tags:
+        - "billing"
+      security:
+        - bearerAuth: []
+      responses:
+        "200":
+          description: "Current usage"
+          content:
+            "application/json":
+              schema:
+                type: "object"
+                properties:
+                  "organizationId":
+                    type: "string"
+                    format: "uuid"
+                  "month":
+                    type: "string"
+                  "transactionalEmails":
+                    type: "number"
+                  "marketingEmails":
+                    type: "number"
+                  "transactionalLimit":
+                    type: "number"
+                    nullable: true
+                  "marketingLimit":
+                    type: "number"
+                    nullable: true
+                  "transactionalPercentUsed":
+                    type: "number"
+                  "marketingPercentUsed":
+                    type: "number"
+                required:
+                  - "organizationId"
+                  - "month"
+                  - "transactionalEmails"
+                  - "marketingEmails"
+                  - "transactionalLimit"
+                  - "marketingLimit"
+                  - "transactionalPercentUsed"
+                  - "marketingPercentUsed"
+        "401":
+          description: "Unauthorized"
+          content:
+            "application/json":
+              schema:
+                type: "object"
+                properties:
+                  "error":
+                    type: "string"
+                required:
+                  - "error"
+  "/v1/billing/webhooks":
+    post:
+      tags:
+        - "billing"
+      requestBody:
+        content:
+          "application/json":
+            schema:
+              nullable: true
+      responses:
+        "200":
+          description: "Webhook processed"
+          content:
+            "application/json":
+              schema:
+                type: "object"
+                properties:
+                  "received":
+                    type: "boolean"
+                required:
+                  - "received"
+        "400":
+          description: "Invalid signature"
+          content:
+            "application/json":
+              schema:
+                type: "object"
+                properties:
+                  "error":
+                    type: "string"
+                required:
+                  - "error"
+  "/v1/topics":
+    get:
+      tags:
+        - "topics"
+      security:
+        - bearerAuth: []
+      responses:
+        "200":
+          description: "List of topics"
+          content:
+            "application/json":
+              schema:
+                type: "object"
+                properties:
+                  "topics":
+                    type: "array"
+                    items:
+                      type: "object"
+                      properties:
+                        "id":
+                          type: "string"
+                          format: "uuid"
+                        "organization_id":
+                          type: "string"
+                          format: "uuid"
+                        "name":
+                          type: "string"
+                          maxLength: 100
+                        "description":
+                          type: "string"
+                          nullable: true
+                        "created_at":
+                          type: "string"
+                        "updated_at":
+                          type: "string"
+                      required:
+                        - "id"
+                        - "organization_id"
+                        - "name"
+                        - "description"
+                        - "created_at"
+                        - "updated_at"
+                required:
+                  - "topics"
+        "401":
+          description: "Unauthorized"
+          content:
+            "application/json":
+              schema:
+                type: "object"
+                properties:
+                  "error":
+                    type: "string"
+                required:
+                  - "error"
+    post:
+      tags:
+        - "topics"
+      security:
+        - bearerAuth: []
+      requestBody:
+        content:
+          "application/json":
+            schema:
+              type: "object"
+              properties:
+                "name":
+                  type: "string"
+                  minLength: 1
+                  maxLength: 100
+                "description":
+                  type: "string"
+              required:
+                - "name"
+      responses:
+        "201":
+          description: "Topic created"
+          content:
+            "application/json":
+              schema:
+                type: "object"
+                properties:
+                  "id":
+                    type: "string"
+                    format: "uuid"
+                  "organization_id":
+                    type: "string"
+                    format: "uuid"
+                  "name":
+                    type: "string"
+                    maxLength: 100
+                  "description":
+                    type: "string"
+                    nullable: true
+                  "created_at":
+                    type: "string"
+                  "updated_at":
+                    type: "string"
+                required:
+                  - "id"
+                  - "organization_id"
+                  - "name"
+                  - "description"
+                  - "created_at"
+                  - "updated_at"
+        "401":
+          description: "Unauthorized"
+          content:
+            "application/json":
+              schema:
+                type: "object"
+                properties:
+                  "error":
+                    type: "string"
+                required:
+                  - "error"
+  "/v1/topics/{id}":
+    put:
+      tags:
+        - "topics"
+      security:
+        - bearerAuth: []
+      parameters:
+        - schema:
+            type: "string"
+            format: "uuid"
+          required: true
+          name: "id"
+          in: "path"
+      requestBody:
+        content:
+          "application/json":
+            schema:
+              type: "object"
+              properties:
+                "name":
+                  type: "string"
+                  minLength: 1
+                  maxLength: 100
+                "description":
+                  type: "string"
+      responses:
+        "200":
+          description: "Topic updated"
+          content:
+            "application/json":
+              schema:
+                type: "object"
+                properties:
+                  "id":
+                    type: "string"
+                    format: "uuid"
+                  "organization_id":
+                    type: "string"
+                    format: "uuid"
+                  "name":
+                    type: "string"
+                    maxLength: 100
+                  "description":
+                    type: "string"
+                    nullable: true
+                  "created_at":
+                    type: "string"
+                  "updated_at":
+                    type: "string"
+                required:
+                  - "id"
+                  - "organization_id"
+                  - "name"
+                  - "description"
+                  - "created_at"
+                  - "updated_at"
+        "401":
+          description: "Unauthorized"
+          content:
+            "application/json":
+              schema:
+                type: "object"
+                properties:
+                  "error":
+                    type: "string"
+                required:
+                  - "error"
+        "404":
+          description: "Topic not found"
+          content:
+            "application/json":
+              schema:
+                type: "object"
+                properties:
+                  "error":
+                    type: "string"
+                required:
+                  - "error"
+    delete:
+      tags:
+        - "topics"
+      security:
+        - bearerAuth: []
+      parameters:
+        - schema:
+            type: "string"
+            format: "uuid"
+          required: true
+          name: "id"
+          in: "path"
+      responses:
+        "200":
+          description: "Topic deleted"
+          content:
+            "application/json":
+              schema:
+                type: "object"
+                properties:
+                  "success":
+                    type: "boolean"
+                required:
+                  - "success"
+        "401":
+          description: "Unauthorized"
+          content:
+            "application/json":
+              schema:
+                type: "object"
+                properties:
+                  "error":
+                    type: "string"
+                required:
+                  - "error"
+        "404":
+          description: "Topic not found"
+          content:
+            "application/json":
+              schema:
+                type: "object"
+                properties:
+                  "error":
+                    type: "string"
+                required:
+                  - "error"
+  "/v1/unsubscribe/{organizationId}":
+    get:
+      tags:
+        - "unsubscribe"
+      parameters:
+        - schema:
+            type: "string"
+            format: "uuid"
+          required: true
+          name: "organizationId"
+          in: "path"
+        - schema:
+            type: "string"
+            format: "email"
+          required: true
+          name: "email"
+          in: "query"
+      responses:
+        "200":
+          description: "Unsubscribe page data"
+          content:
+            "application/json":
+              schema:
+                type: "object"
+                properties:
+                  "organizationName":
+                    type: "string"
+                  "companyName":
+                    type: "string"
+                    nullable: true
+                  "logoUrl":
+                    type: "string"
+                    nullable: true
+                  "primaryColor":
+                    type: "string"
+                    nullable: true
+                  "topics":
+                    type: "array"
+                    items:
+                      type: "object"
+                      properties:
+                        "id":
+                          type: "string"
+                          format: "uuid"
+                        "name":
+                          type: "string"
+                        "description":
+                          type: "string"
+                          nullable: true
+                      required:
+                        - "id"
+                        - "name"
+                        - "description"
+                  "contactEmail":
+                    type: "string"
+                  "currentUnsubscribes":
+                    type: "array"
+                    items:
+                      type: "string"
+                      format: "uuid"
+                required:
+                  - "organizationName"
+                  - "companyName"
+                  - "logoUrl"
+                  - "primaryColor"
+                  - "topics"
+                  - "contactEmail"
+                  - "currentUnsubscribes"
+        "404":
+          description: "Organization or contact not found"
+          content:
+            "application/json":
+              schema:
+                type: "object"
+                properties:
+                  "error":
+                    type: "string"
+                required:
+                  - "error"
+  "/v1/unsubscribe":
+    post:
+      tags:
+        - "unsubscribe"
+      requestBody:
+        content:
+          "application/json":
+            schema:
+              type: "object"
+              properties:
+                "email":
+                  type: "string"
+                  format: "email"
+                "organizationId":
+                  type: "string"
+                  format: "uuid"
+                "topicIds":
+                  type: "array"
+                  items:
+                    type: "string"
+                    format: "uuid"
+                "unsubscribeAll":
+                  type: "boolean"
+                "reason":
+                  type: "string"
+              required:
+                - "email"
+                - "organizationId"
+      responses:
+        "200":
+          description: "Unsubscribe processed"
+          content:
+            "application/json":
+              schema:
+                type: "object"
+                properties:
+                  "success":
+                    type: "boolean"
+                  "message":
+                    type: "string"
+                required:
+                  - "success"
+                  - "message"
+        "404":
+          description: "Contact not found"
+          content:
+            "application/json":
+              schema:
+                type: "object"
+                properties:
+                  "error":
+                    type: "string"
+                required:
+                  - "error"
+  "/v1/integrations/connections":
+    get:
+      tags:
+        - "integrations"
+      security:
+        - bearerAuth: []
+      responses:
+        "200":
+          description: "List of OAuth connections"
+          content:
+            "application/json":
+              schema:
+                type: "object"
+                properties:
+                  "connections":
+                    type: "array"
+                    items:
+                      type: "object"
+                      properties:
+                        "id":
+                          type: "string"
+                          format: "uuid"
+                        "provider":
+                          type: "string"
+                          enum:
+                            - "supabase"
+                            - "vercel"
+                        "provider_user_id":
+                          type: "string"
+                        "provider_metadata":
+                          nullable: true
+                        "created_at":
+                          type: "string"
+                      required:
+                        - "id"
+                        - "provider"
+                        - "provider_user_id"
+                        - "created_at"
+                required:
+                  - "connections"
+  "/v1/integrations/supabase/authorize":
+    get:
+      tags:
+        - "integrations"
+      security:
+        - bearerAuth: []
+      responses:
+        "302":
+          description: "Redirect to Supabase OAuth"
+  "/v1/integrations/supabase/callback":
+    get:
+      tags:
+        - "integrations"
+      parameters:
+        - schema:
+            type: "string"
+          required: true
+          name: "code"
+          in: "query"
+        - schema:
+            type: "string"
+          required: true
+          name: "state"
+          in: "query"
+      responses:
+        "302":
+          description: "Redirect to dashboard"
+  "/v1/integrations/{id}":
+    delete:
+      tags:
+        - "integrations"
+      security:
+        - bearerAuth: []
+      parameters:
+        - schema:
+            type: "string"
+            format: "uuid"
+          required: true
+          name: "id"
+          in: "path"
+      responses:
+        "200":
+          description: "Connection deleted"
+          content:
+            "application/json":
+              schema:
+                type: "object"
+                properties:
+                  "success":
+                    type: "boolean"
+                required:
+                  - "success"
+  "/v1/integrations/vercel/authorize":
+    get:
+      tags:
+        - "integrations"
+      security:
+        - bearerAuth: []
+      responses:
+        "302":
+          description: "Redirect to Vercel OAuth"
+  "/v1/integrations/vercel/callback":
+    get:
+      tags:
+        - "integrations"
+      parameters:
+        - schema:
+            type: "string"
+          required: true
+          name: "code"
+          in: "query"
+        - schema:
+            type: "string"
+          required: true
+          name: "state"
+          in: "query"
+      responses:
+        "302":
+          description: "Redirect to dashboard"
+  "/v1/contact-sync/supabase":
+    post:
+      tags:
+        - "contact-sync"
+      security:
+        - bearerAuth: []
+      requestBody:
+        content:
+          "application/json":
+            schema:
+              type: "object"
+              properties:
+                "oauthConnectionId":
+                  type: "string"
+                  format: "uuid"
+                "projectId":
+                  type: "string"
+                "tableName":
+                  type: "string"
+                "fieldMappings":
+                  type: "object"
+                  properties:
+                    "email":
+                      type: "string"
+                    "customId":
+                      type: "string"
+                    "firstName":
+                      type: "string"
+                    "lastName":
+                      type: "string"
+                    "properties":
+                      type: "object"
+                      additionalProperties:
+                        type: "string"
+                  required:
+                    - "email"
+              required:
+                - "oauthConnectionId"
+                - "projectId"
+                - "tableName"
+                - "fieldMappings"
+      responses:
+        "201":
+          description: "Sync created"
+          content:
+            "application/json":
+              schema:
+                type: "object"
+                properties:
+                  "id":
+                    type: "string"
+                    format: "uuid"
+                  "organization_id":
+                    type: "string"
+                    format: "uuid"
+                  "source_type":
+                    type: "string"
+                    enum:
+                      - "supabase"
+                      - "vercel"
+                      - "webhook"
+                  "source_project_id":
+                    type: "string"
+                  "source_table":
+                    type: "string"
+                  "field_mappings":
+                    nullable: true
+                  "sync_enabled":
+                    type: "boolean"
+                  "created_at":
+                    type: "string"
+                required:
+                  - "id"
+                  - "organization_id"
+                  - "source_type"
+                  - "source_project_id"
+                  - "source_table"
+                  - "sync_enabled"
+                  - "created_at"
+  "/v1/contact-sync/webhook/{syncId}":
+    post:
+      tags:
+        - "contact-sync"
+      parameters:
+        - schema:
+            type: "string"
+            format: "uuid"
+          required: true
+          name: "syncId"
+          in: "path"
+      requestBody:
+        content:
+          "application/json":
+            schema:
+              nullable: true
+      responses:
+        "200":
+          description: "Webhook processed"
+          content:
+            "application/json":
+              schema:
+                type: "object"
+                properties:
+                  "success":
+                    type: "boolean"
+                required:
+                  - "success"
+  "/v1/contact-sync":
+    get:
+      tags:
+        - "contact-sync"
+      security:
+        - bearerAuth: []
+      responses:
+        "200":
+          description: "List of contact syncs"
+          content:
+            "application/json":
+              schema:
+                type: "object"
+                properties:
+                  "syncs":
+                    type: "array"
+                    items:
+                      type: "object"
+                      properties:
+                        "id":
+                          type: "string"
+                          format: "uuid"
+                        "organization_id":
+                          type: "string"
+                          format: "uuid"
+                        "source_type":
+                          type: "string"
+                          enum:
+                            - "supabase"
+                            - "vercel"
+                            - "webhook"
+                        "source_project_id":
+                          type: "string"
+                        "source_table":
+                          type: "string"
+                        "field_mappings":
+                          nullable: true
+                        "sync_enabled":
+                          type: "boolean"
+                        "created_at":
+                          type: "string"
+                      required:
+                        - "id"
+                        - "organization_id"
+                        - "source_type"
+                        - "source_project_id"
+                        - "source_table"
+                        - "sync_enabled"
+                        - "created_at"
+                required:
+                  - "syncs"
+  "/v1/contact-sync/{id}":
+    delete:
+      tags:
+        - "contact-sync"
+      security:
+        - bearerAuth: []
+      parameters:
+        - schema:
+            type: "string"
+            format: "uuid"
+          required: true
+          name: "id"
+          in: "path"
+      responses:
+        "200":
+          description: "Sync deleted"
+          content:
+            "application/json":
+              schema:
+                type: "object"
+                properties:
+                  "success":
+                    type: "boolean"
+                required:
+                  - "success"
