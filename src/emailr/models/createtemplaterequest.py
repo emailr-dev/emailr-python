@@ -12,6 +12,12 @@ class CreateTemplateRequestTypedDict(TypedDict):
     html_content: NotRequired[str]
     text_content: NotRequired[str]
     variables: NotRequired[List[str]]
+    from_email: NotRequired[str]
+    r"""Default from email address. Must match a verified domain."""
+    reply_to: NotRequired[str]
+    r"""Reply-To email address for template-based emails."""
+    preview_text: NotRequired[str]
+    r"""Preview text (preheader) shown in email clients."""
 
 
 class CreateTemplateRequest(BaseModel):
@@ -24,3 +30,12 @@ class CreateTemplateRequest(BaseModel):
     text_content: Optional[str] = None
 
     variables: Optional[List[str]] = None
+
+    from_email: Optional[str] = None
+    r"""Default from email address. Must match a verified domain."""
+
+    reply_to: Optional[str] = None
+    r"""Reply-To email address for template-based emails."""
+
+    preview_text: Optional[str] = None
+    r"""Preview text (preheader) shown in email clients."""

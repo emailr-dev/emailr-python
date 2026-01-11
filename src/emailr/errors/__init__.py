@@ -7,25 +7,114 @@ import builtins
 import sys
 
 if TYPE_CHECKING:
+    from .delete_v1_topics_id_op import (
+        DeleteV1TopicsIDNotFoundError,
+        DeleteV1TopicsIDNotFoundErrorData,
+        DeleteV1TopicsIDUnauthorizedError,
+        DeleteV1TopicsIDUnauthorizedErrorData,
+    )
     from .emailrdefaulterror import EmailrDefaultError
     from .error import Error, ErrorData
+    from .get_v1_billing_usageop import (
+        GetV1BillingUsageUnauthorizedError,
+        GetV1BillingUsageUnauthorizedErrorData,
+    )
+    from .get_v1_topicsop import (
+        GetV1TopicsUnauthorizedError,
+        GetV1TopicsUnauthorizedErrorData,
+    )
+    from .get_v1_unsubscribe_organizationid_op import (
+        GetV1UnsubscribeOrganizationIDNotFoundError,
+        GetV1UnsubscribeOrganizationIDNotFoundErrorData,
+    )
     from .no_response_error import NoResponseError
+    from .post_v1_billing_checkoutop import (
+        PostV1BillingCheckoutUnauthorizedError,
+        PostV1BillingCheckoutUnauthorizedErrorData,
+    )
+    from .post_v1_billing_portalop import (
+        PostV1BillingPortalUnauthorizedError,
+        PostV1BillingPortalUnauthorizedErrorData,
+    )
+    from .post_v1_billing_webhooksop import BadRequestError, BadRequestErrorData
+    from .post_v1_topicsop import (
+        PostV1TopicsUnauthorizedError,
+        PostV1TopicsUnauthorizedErrorData,
+    )
+    from .post_v1_unsubscribeop import (
+        PostV1UnsubscribeNotFoundError,
+        PostV1UnsubscribeNotFoundErrorData,
+    )
+    from .put_v1_topics_id_op import (
+        PutV1TopicsIDNotFoundError,
+        PutV1TopicsIDNotFoundErrorData,
+        PutV1TopicsIDUnauthorizedError,
+        PutV1TopicsIDUnauthorizedErrorData,
+    )
     from .responsevalidationerror import ResponseValidationError
 
 __all__ = [
+    "BadRequestError",
+    "BadRequestErrorData",
+    "DeleteV1TopicsIDNotFoundError",
+    "DeleteV1TopicsIDNotFoundErrorData",
+    "DeleteV1TopicsIDUnauthorizedError",
+    "DeleteV1TopicsIDUnauthorizedErrorData",
     "EmailrDefaultError",
     "EmailrError",
     "Error",
     "ErrorData",
+    "GetV1BillingUsageUnauthorizedError",
+    "GetV1BillingUsageUnauthorizedErrorData",
+    "GetV1TopicsUnauthorizedError",
+    "GetV1TopicsUnauthorizedErrorData",
+    "GetV1UnsubscribeOrganizationIDNotFoundError",
+    "GetV1UnsubscribeOrganizationIDNotFoundErrorData",
     "NoResponseError",
+    "PostV1BillingCheckoutUnauthorizedError",
+    "PostV1BillingCheckoutUnauthorizedErrorData",
+    "PostV1BillingPortalUnauthorizedError",
+    "PostV1BillingPortalUnauthorizedErrorData",
+    "PostV1TopicsUnauthorizedError",
+    "PostV1TopicsUnauthorizedErrorData",
+    "PostV1UnsubscribeNotFoundError",
+    "PostV1UnsubscribeNotFoundErrorData",
+    "PutV1TopicsIDNotFoundError",
+    "PutV1TopicsIDNotFoundErrorData",
+    "PutV1TopicsIDUnauthorizedError",
+    "PutV1TopicsIDUnauthorizedErrorData",
     "ResponseValidationError",
 ]
 
 _dynamic_imports: dict[str, str] = {
+    "DeleteV1TopicsIDNotFoundError": ".delete_v1_topics_id_op",
+    "DeleteV1TopicsIDNotFoundErrorData": ".delete_v1_topics_id_op",
+    "DeleteV1TopicsIDUnauthorizedError": ".delete_v1_topics_id_op",
+    "DeleteV1TopicsIDUnauthorizedErrorData": ".delete_v1_topics_id_op",
     "EmailrDefaultError": ".emailrdefaulterror",
     "Error": ".error",
     "ErrorData": ".error",
+    "GetV1BillingUsageUnauthorizedError": ".get_v1_billing_usageop",
+    "GetV1BillingUsageUnauthorizedErrorData": ".get_v1_billing_usageop",
+    "GetV1TopicsUnauthorizedError": ".get_v1_topicsop",
+    "GetV1TopicsUnauthorizedErrorData": ".get_v1_topicsop",
+    "GetV1UnsubscribeOrganizationIDNotFoundError": ".get_v1_unsubscribe_organizationid_op",
+    "GetV1UnsubscribeOrganizationIDNotFoundErrorData": ".get_v1_unsubscribe_organizationid_op",
     "NoResponseError": ".no_response_error",
+    "PostV1BillingCheckoutUnauthorizedError": ".post_v1_billing_checkoutop",
+    "PostV1BillingCheckoutUnauthorizedErrorData": ".post_v1_billing_checkoutop",
+    "PostV1BillingPortalUnauthorizedError": ".post_v1_billing_portalop",
+    "PostV1BillingPortalUnauthorizedErrorData": ".post_v1_billing_portalop",
+    "BadRequestError": ".post_v1_billing_webhooksop",
+    "BadRequestErrorData": ".post_v1_billing_webhooksop",
+    "PostV1TopicsUnauthorizedError": ".post_v1_topicsop",
+    "PostV1TopicsUnauthorizedErrorData": ".post_v1_topicsop",
+    "PostV1UnsubscribeNotFoundError": ".post_v1_unsubscribeop",
+    "PostV1UnsubscribeNotFoundErrorData": ".post_v1_unsubscribeop",
+    "PutV1TopicsIDNotFoundError": ".put_v1_topics_id_op",
+    "PutV1TopicsIDNotFoundErrorData": ".put_v1_topics_id_op",
+    "PutV1TopicsIDUnauthorizedError": ".put_v1_topics_id_op",
+    "PutV1TopicsIDUnauthorizedErrorData": ".put_v1_topics_id_op",
     "ResponseValidationError": ".responsevalidationerror",
 }
 
