@@ -37,6 +37,9 @@ with Emailr(
             "name",
             "company",
         ],
+        "from_email": "hello@example.com",
+        "reply_to": "support@example.com",
+        "preview_text": "Check out what's new...",
     })
 
     # Handle response
@@ -162,7 +165,7 @@ with Emailr(
     res = e_client.templates.update(id="123e4567-e89b-12d3-a456-426614174000", name="Welcome Email", subject="Welcome to {{company}}", html_content="<h1>Welcome {{name}}</h1>", text_content="Welcome {{name}}", variables=[
         "name",
         "company",
-    ])
+    ], from_email="hello@example.com", reply_to="support@example.com", preview_text="Check out what's new...")
 
     # Handle response
     print(res)
@@ -179,6 +182,9 @@ with Emailr(
 | `html_content`                                                      | *Optional[str]*                                                     | :heavy_minus_sign:                                                  | N/A                                                                 | <h1>Welcome {{name}}</h1>                                           |
 | `text_content`                                                      | *Optional[str]*                                                     | :heavy_minus_sign:                                                  | N/A                                                                 | Welcome {{name}}                                                    |
 | `variables`                                                         | List[*str*]                                                         | :heavy_minus_sign:                                                  | N/A                                                                 | [<br/>"name",<br/>"company"<br/>]                                   |
+| `from_email`                                                        | *Optional[str]*                                                     | :heavy_minus_sign:                                                  | Default from email address. Must match a verified domain.           | hello@example.com                                                   |
+| `reply_to`                                                          | *Optional[str]*                                                     | :heavy_minus_sign:                                                  | Reply-To email address for template-based emails.                   | support@example.com                                                 |
+| `preview_text`                                                      | *Optional[str]*                                                     | :heavy_minus_sign:                                                  | Preview text (preheader) shown in email clients.                    | Check out what's new...                                             |
 | `retries`                                                           | [Optional[utils.RetryConfig]](../../models/utils/retryconfig.md)    | :heavy_minus_sign:                                                  | Configuration to override the default retry behavior of the client. |                                                                     |
 
 ### Response

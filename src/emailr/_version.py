@@ -3,10 +3,10 @@
 import importlib.metadata
 
 __title__: str = "emailr"
-__version__: str = "0.1.0"
+__version__: str = "0.1.1"
 __openapi_doc_version__: str = "1.0.0"
-__gen_version__: str = "2.788.15"
-__user_agent__: str = "speakeasy-sdk/python 0.1.0 2.788.15 1.0.0 emailr"
+__gen_version__: str = "2.794.1"
+__user_agent__: str = "speakeasy-sdk/python 0.1.1 2.794.1 1.0.0 emailr"
 
 try:
     if __package__ is not None:

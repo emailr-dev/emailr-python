@@ -40,10 +40,6 @@ Developer-friendly & type-safe Python SDK specifically catered to leverage *emai
 <!-- Start SDK Installation [installation] -->
 ## SDK Installation
 
-> [!TIP]
-> To finish publishing your SDK to PyPI you must [run your first generation action](https://www.speakeasy.com/docs/github-setup#step-by-step-guide).
-
-
 > [!NOTE]
 > **Python version upgrade policy**
 >
@@ -56,7 +52,7 @@ The SDK can be installed with *uv*, *pip*, or *poetry* package managers.
 *uv* is a fast Python package installer and resolver, designed as a drop-in replacement for pip and pip-tools. It's recommended for its speed and modern Python tooling capabilities.
 
 ```bash
-uv add git+<UNSET>.git
+uv add emailr
 ```
 
 ### PIP
@@ -64,7 +60,7 @@ uv add git+<UNSET>.git
 *PIP* is the default package installer for Python, enabling easy installation and management of packages from PyPI via the command line.
 
 ```bash
-pip install git+<UNSET>.git
+pip install emailr
 ```
 
 ### Poetry
@@ -72,7 +68,7 @@ pip install git+<UNSET>.git
 *Poetry* is a modern tool that simplifies dependency management and package publishing by using a single `pyproject.toml` file to handle project metadata and dependencies.
 
 ```bash
-poetry add git+<UNSET>.git
+poetry add emailr
 ```
 
 ### Shell and script usage with `uv`
@@ -159,6 +155,8 @@ with Emailr(
             "thread_id": "123e4567-e89b-12d3-a456-426614174000",
             "parent_email_id": "123e4567-e89b-12d3-a456-426614174000",
         },
+        "reply_to_email": "support@example.com",
+        "preview_text": "Check out our latest updates...",
     })
 
     # Handle response
@@ -208,6 +206,8 @@ async def main():
                 "thread_id": "123e4567-e89b-12d3-a456-426614174000",
                 "parent_email_id": "123e4567-e89b-12d3-a456-426614174000",
             },
+            "reply_to_email": "support@example.com",
+            "preview_text": "Check out our latest updates...",
         })
 
         # Handle response
@@ -265,6 +265,8 @@ with Emailr(
             "thread_id": "123e4567-e89b-12d3-a456-426614174000",
             "parent_email_id": "123e4567-e89b-12d3-a456-426614174000",
         },
+        "reply_to_email": "support@example.com",
+        "preview_text": "Check out our latest updates...",
     })
 
     # Handle response
@@ -285,12 +287,26 @@ with Emailr(
 * [list](docs/sdks/apikeys/README.md#list) - List API keys
 * [revoke](docs/sdks/apikeys/README.md#revoke) - Revoke API key
 
+### [Billing](docs/sdks/billing/README.md)
+
+* [post_v1_billing_checkout](docs/sdks/billing/README.md#post_v1_billing_checkout)
+* [post_v1_billing_portal](docs/sdks/billing/README.md#post_v1_billing_portal)
+* [get_v1_billing_usage](docs/sdks/billing/README.md#get_v1_billing_usage)
+* [post_v1_billing_webhooks](docs/sdks/billing/README.md#post_v1_billing_webhooks)
+
 ### [Broadcasts](docs/sdks/broadcasts/README.md)
 
 * [create](docs/sdks/broadcasts/README.md#create) - Create broadcast
 * [list](docs/sdks/broadcasts/README.md#list) - List broadcasts
 * [send](docs/sdks/broadcasts/README.md#send) - Send broadcast
 * [get](docs/sdks/broadcasts/README.md#get) - Get broadcast
+
+### [ContactSync](docs/sdks/contactsync/README.md)
+
+* [post_v1_contact_sync_supabase](docs/sdks/contactsync/README.md#post_v1_contact_sync_supabase)
+* [post_v1_contact_sync_webhook_sync_id_](docs/sdks/contactsync/README.md#post_v1_contact_sync_webhook_sync_id_)
+* [get_v1_contact_sync](docs/sdks/contactsync/README.md#get_v1_contact_sync)
+* [delete_v1_contact_sync_id_](docs/sdks/contactsync/README.md#delete_v1_contact_sync_id_)
 
 ### [Contacts](docs/sdks/contacts/README.md)
 
@@ -316,6 +332,15 @@ with Emailr(
 * [get](docs/sdks/emails/README.md#get) - Get email by ID
 * [list](docs/sdks/emails/README.md#list) - List emails
 
+### [Integrations](docs/sdks/integrations/README.md)
+
+* [get_v1_integrations_connections](docs/sdks/integrations/README.md#get_v1_integrations_connections)
+* [get_v1_integrations_supabase_authorize](docs/sdks/integrations/README.md#get_v1_integrations_supabase_authorize)
+* [get_v1_integrations_supabase_callback](docs/sdks/integrations/README.md#get_v1_integrations_supabase_callback)
+* [delete_v1_integrations_id_](docs/sdks/integrations/README.md#delete_v1_integrations_id_)
+* [get_v1_integrations_vercel_authorize](docs/sdks/integrations/README.md#get_v1_integrations_vercel_authorize)
+* [get_v1_integrations_vercel_callback](docs/sdks/integrations/README.md#get_v1_integrations_vercel_callback)
+
 ### [Logs](docs/sdks/logs/README.md)
 
 * [list](docs/sdks/logs/README.md#list) - Get email logs
@@ -339,6 +364,10 @@ with Emailr(
 * [get_unsubscribe](docs/sdks/settings/README.md#get_unsubscribe) - Get unsubscribe settings
 * [update_unsubscribe](docs/sdks/settings/README.md#update_unsubscribe) - Update unsubscribe settings
 
+### [Smtp](docs/sdks/smtp/README.md)
+
+* [get_smtp_credentials](docs/sdks/smtp/README.md#get_smtp_credentials) - Get SMTP credentials
+
 ### [Templates](docs/sdks/templates/README.md)
 
 * [create](docs/sdks/templates/README.md#create) - Create a template
@@ -346,6 +375,18 @@ with Emailr(
 * [get](docs/sdks/templates/README.md#get) - Get template
 * [update](docs/sdks/templates/README.md#update) - Update template
 * [delete](docs/sdks/templates/README.md#delete) - Delete template
+
+### [Topics](docs/sdks/topics/README.md)
+
+* [get_v1_topics](docs/sdks/topics/README.md#get_v1_topics)
+* [post_v1_topics](docs/sdks/topics/README.md#post_v1_topics)
+* [put_v1_topics_id_](docs/sdks/topics/README.md#put_v1_topics_id_)
+* [delete_v1_topics_id_](docs/sdks/topics/README.md#delete_v1_topics_id_)
+
+### [Unsubscribe](docs/sdks/unsubscribe/README.md)
+
+* [get_v1_unsubscribe_organization_id_](docs/sdks/unsubscribe/README.md#get_v1_unsubscribe_organization_id_)
+* [post_v1_unsubscribe](docs/sdks/unsubscribe/README.md#post_v1_unsubscribe)
 
 ### [Webhooks](docs/sdks/webhooks/README.md)
 
@@ -401,6 +442,8 @@ with Emailr(
             "thread_id": "123e4567-e89b-12d3-a456-426614174000",
             "parent_email_id": "123e4567-e89b-12d3-a456-426614174000",
         },
+        "reply_to_email": "support@example.com",
+        "preview_text": "Check out our latest updates...",
     },
         RetryConfig("backoff", BackoffStrategy(1, 50, 1.1, 100), False))
 
@@ -448,6 +491,8 @@ with Emailr(
             "thread_id": "123e4567-e89b-12d3-a456-426614174000",
             "parent_email_id": "123e4567-e89b-12d3-a456-426614174000",
         },
+        "reply_to_email": "support@example.com",
+        "preview_text": "Check out our latest updates...",
     })
 
     # Handle response
@@ -509,6 +554,8 @@ with Emailr(
                 "thread_id": "123e4567-e89b-12d3-a456-426614174000",
                 "parent_email_id": "123e4567-e89b-12d3-a456-426614174000",
             },
+            "reply_to_email": "support@example.com",
+            "preview_text": "Check out our latest updates...",
         })
 
         # Handle response
@@ -531,11 +578,10 @@ with Emailr(
 ```
 
 ### Error Classes
-**Primary errors:**
+**Primary error:**
 * [`EmailrError`](./src/emailr/errors/emailrerror.py): The base class for HTTP error responses.
-  * [`Error`](./src/emailr/errors/error.py): Generic error.
 
-<details><summary>Less common errors (5)</summary>
+<details><summary>Less common errors (18)</summary>
 
 <br />
 
@@ -546,9 +592,24 @@ with Emailr(
 
 
 **Inherit from [`EmailrError`](./src/emailr/errors/emailrerror.py)**:
+* [`Error`](./src/emailr/errors/error.py): Applicable to 44 of 64 methods.*
+* [`BadRequestError`](./src/emailr/errors/badrequesterror.py): Invalid signature. Status code `400`. Applicable to 1 of 64 methods.*
+* [`PostV1BillingCheckoutUnauthorizedError`](./src/emailr/errors/postv1billingcheckoutunauthorizederror.py): Unauthorized. Status code `401`. Applicable to 1 of 64 methods.*
+* [`PostV1BillingPortalUnauthorizedError`](./src/emailr/errors/postv1billingportalunauthorizederror.py): Unauthorized. Status code `401`. Applicable to 1 of 64 methods.*
+* [`GetV1BillingUsageUnauthorizedError`](./src/emailr/errors/getv1billingusageunauthorizederror.py): Unauthorized. Status code `401`. Applicable to 1 of 64 methods.*
+* [`GetV1TopicsUnauthorizedError`](./src/emailr/errors/getv1topicsunauthorizederror.py): Unauthorized. Status code `401`. Applicable to 1 of 64 methods.*
+* [`PostV1TopicsUnauthorizedError`](./src/emailr/errors/postv1topicsunauthorizederror.py): Unauthorized. Status code `401`. Applicable to 1 of 64 methods.*
+* [`PutV1TopicsIDUnauthorizedError`](./src/emailr/errors/putv1topicsidunauthorizederror.py): Unauthorized. Status code `401`. Applicable to 1 of 64 methods.*
+* [`DeleteV1TopicsIDUnauthorizedError`](./src/emailr/errors/deletev1topicsidunauthorizederror.py): Unauthorized. Status code `401`. Applicable to 1 of 64 methods.*
+* [`PutV1TopicsIDNotFoundError`](./src/emailr/errors/putv1topicsidnotfounderror.py): Topic not found. Status code `404`. Applicable to 1 of 64 methods.*
+* [`DeleteV1TopicsIDNotFoundError`](./src/emailr/errors/deletev1topicsidnotfounderror.py): Topic not found. Status code `404`. Applicable to 1 of 64 methods.*
+* [`GetV1UnsubscribeOrganizationIDNotFoundError`](./src/emailr/errors/getv1unsubscribeorganizationidnotfounderror.py): Organization or contact not found. Status code `404`. Applicable to 1 of 64 methods.*
+* [`PostV1UnsubscribeNotFoundError`](./src/emailr/errors/postv1unsubscribenotfounderror.py): Contact not found. Status code `404`. Applicable to 1 of 64 methods.*
 * [`ResponseValidationError`](./src/emailr/errors/responsevalidationerror.py): Type mismatch between the response data and the expected Pydantic model. Provides access to the Pydantic validation error via the `cause` attribute.
 
 </details>
+
+\* Check [the method documentation](#available-resources-and-operations) to see if the error is applicable.
 <!-- End Error Handling [errors] -->
 
 <!-- Start Server Selection [server] -->
@@ -594,6 +655,8 @@ with Emailr(
             "thread_id": "123e4567-e89b-12d3-a456-426614174000",
             "parent_email_id": "123e4567-e89b-12d3-a456-426614174000",
         },
+        "reply_to_email": "support@example.com",
+        "preview_text": "Check out our latest updates...",
     })
 
     # Handle response

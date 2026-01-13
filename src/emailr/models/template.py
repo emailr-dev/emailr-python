@@ -16,6 +16,9 @@ class TemplateTypedDict(TypedDict):
     html_content: Nullable[str]
     text_content: Nullable[str]
     variables: Nullable[List[str]]
+    from_email: Nullable[str]
+    reply_to: Nullable[str]
+    preview_text: Nullable[str]
     created_by: Nullable[str]
     created_at: datetime
     updated_at: datetime
@@ -36,6 +39,12 @@ class Template(BaseModel):
 
     variables: Nullable[List[str]]
 
+    from_email: Nullable[str]
+
+    reply_to: Nullable[str]
+
+    preview_text: Nullable[str]
+
     created_by: Nullable[str]
 
     created_at: datetime
@@ -45,7 +54,15 @@ class Template(BaseModel):
     @model_serializer(mode="wrap")
     def serialize_model(self, handler):
         optional_fields = []
-        nullable_fields = ["html_content", "text_content", "variables", "created_by"]
+        nullable_fields = [
+            "html_content",
+            "text_content",
+            "variables",
+            "from_email",
+            "reply_to",
+            "preview_text",
+            "created_by",
+        ]
         null_default_fields = []
 
         serialized = handler(self)

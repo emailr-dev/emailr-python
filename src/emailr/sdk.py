@@ -16,15 +16,21 @@ import weakref
 
 if TYPE_CHECKING:
     from emailr.api_keys import APIKeys
+    from emailr.billing import Billing
     from emailr.broadcasts import Broadcasts
+    from emailr.contact_sync import ContactSync
     from emailr.contacts import Contacts
     from emailr.domains import Domains
     from emailr.emails import Emails
+    from emailr.integrations import Integrations
     from emailr.logs import Logs
     from emailr.metrics import Metrics
     from emailr.segments import Segments
     from emailr.settings import Settings
+    from emailr.smtp import SMTP
     from emailr.templates import Templates
+    from emailr.topics import Topics
+    from emailr.unsubscribe import Unsubscribe
     from emailr.webhooks import Webhooks
 
 
@@ -50,6 +56,18 @@ class Emailr(BaseSDK):
     r"""Email event logs"""
     settings: "Settings"
     r"""Organization settings"""
+    smtp: "SMTP"
+    r"""SMTP credentials for email sending"""
+    billing: "Billing"
+    r"""Subscription billing and usage"""
+    topics: "Topics"
+    r"""Broadcast topic management"""
+    unsubscribe: "Unsubscribe"
+    r"""Email unsubscribe management"""
+    integrations: "Integrations"
+    r"""OAuth integrations (Supabase, Vercel)"""
+    contact_sync: "ContactSync"
+    r"""Third-party contact synchronization"""
     _sub_sdk_map = {
         "emails": ("emailr.emails", "Emails"),
         "contacts": ("emailr.contacts", "Contacts"),
@@ -62,6 +80,12 @@ class Emailr(BaseSDK):
         "metrics": ("emailr.metrics", "Metrics"),
         "logs": ("emailr.logs", "Logs"),
         "settings": ("emailr.settings", "Settings"),
+        "smtp": ("emailr.smtp", "SMTP"),
+        "billing": ("emailr.billing", "Billing"),
+        "topics": ("emailr.topics", "Topics"),
+        "unsubscribe": ("emailr.unsubscribe", "Unsubscribe"),
+        "integrations": ("emailr.integrations", "Integrations"),
+        "contact_sync": ("emailr.contact_sync", "ContactSync"),
     }
 
     def __init__(

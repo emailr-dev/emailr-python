@@ -569,6 +569,9 @@ class Templates(BaseSDK):
         html_content: Optional[str] = None,
         text_content: Optional[str] = None,
         variables: Optional[List[str]] = None,
+        from_email: Optional[str] = None,
+        reply_to: Optional[str] = None,
+        preview_text: Optional[str] = None,
         retries: OptionalNullable[utils.RetryConfig] = UNSET,
         server_url: Optional[str] = None,
         timeout_ms: Optional[int] = None,
@@ -584,6 +587,9 @@ class Templates(BaseSDK):
         :param html_content:
         :param text_content:
         :param variables:
+        :param from_email: Default from email address. Must match a verified domain.
+        :param reply_to: Reply-To email address for template-based emails.
+        :param preview_text: Preview text (preheader) shown in email clients.
         :param retries: Override the default retry configuration for this method
         :param server_url: Override the default server URL for this method
         :param timeout_ms: Override the default request timeout configuration for this method in milliseconds
@@ -607,6 +613,9 @@ class Templates(BaseSDK):
                 html_content=html_content,
                 text_content=text_content,
                 variables=variables,
+                from_email=from_email,
+                reply_to=reply_to,
+                preview_text=preview_text,
             ),
         )
 
@@ -685,6 +694,9 @@ class Templates(BaseSDK):
         html_content: Optional[str] = None,
         text_content: Optional[str] = None,
         variables: Optional[List[str]] = None,
+        from_email: Optional[str] = None,
+        reply_to: Optional[str] = None,
+        preview_text: Optional[str] = None,
         retries: OptionalNullable[utils.RetryConfig] = UNSET,
         server_url: Optional[str] = None,
         timeout_ms: Optional[int] = None,
@@ -700,6 +712,9 @@ class Templates(BaseSDK):
         :param html_content:
         :param text_content:
         :param variables:
+        :param from_email: Default from email address. Must match a verified domain.
+        :param reply_to: Reply-To email address for template-based emails.
+        :param preview_text: Preview text (preheader) shown in email clients.
         :param retries: Override the default retry configuration for this method
         :param server_url: Override the default server URL for this method
         :param timeout_ms: Override the default request timeout configuration for this method in milliseconds
@@ -723,6 +738,9 @@ class Templates(BaseSDK):
                 html_content=html_content,
                 text_content=text_content,
                 variables=variables,
+                from_email=from_email,
+                reply_to=reply_to,
+                preview_text=preview_text,
             ),
         )
 

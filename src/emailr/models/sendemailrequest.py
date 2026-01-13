@@ -16,35 +16,53 @@ To = TypeAliasType("To", Union[str, List[str]])
 
 
 class SendEmailRequestTypedDict(TypedDict):
-    from_: str
     to: ToTypedDict
-    subject: str
+    from_: NotRequired[str]
+    r"""Sender email. Required if not using a template with from_email set."""
+    subject: NotRequired[str]
+    r"""Email subject. Required if not using a template."""
     html: NotRequired[str]
     text: NotRequired[str]
     template_id: NotRequired[str]
+    r"""Template ID. When provided, template values are used for subject, html, text, from, reply_to, and preview_text."""
     template_data: NotRequired[Dict[str, Nullable[Any]]]
+    r"""Variables to render in the template. Must include all variables defined in the template."""
     tags: NotRequired[Dict[str, str]]
     attachments: NotRequired[List[AttachmentTypedDict]]
     reply_to: NotRequired[ReplyToTypedDict]
+    reply_to_email: NotRequired[str]
+    r"""Reply-To email address. Overrides template reply_to if provided."""
+    preview_text: NotRequired[str]
+    r"""Preview text (preheader). Overrides template preview_text if provided."""
 
 
 class SendEmailRequest(BaseModel):
-    from_: Annotated[str, pydantic.Field(alias="from")]
-
     to: To
 
-    subject: str
+    from_: Annotated[Optional[str], pydantic.Field(alias="from")] = None
+    r"""Sender email. Required if not using a template with from_email set."""
+
+    subject: Optional[str] = None
+    r"""Email subject. Required if not using a template."""
 
     html: Optional[str] = None
 
     text: Optional[str] = None
 
     template_id: Optional[str] = None
+    r"""Template ID. When provided, template values are used for subject, html, text, from, reply_to, and preview_text."""
 
     template_data: Optional[Dict[str, Nullable[Any]]] = None
+    r"""Variables to render in the template. Must include all variables defined in the template."""
 
     tags: Optional[Dict[str, str]] = None
 
     attachments: Optional[List[Attachment]] = None
 
     reply_to: Annotated[Optional[ReplyTo], pydantic.Field(alias="replyTo")] = None
+
+    reply_to_email: Optional[str] = None
+    r"""Reply-To email address. Overrides template reply_to if provided."""
+
+    preview_text: Optional[str] = None
+    r"""Preview text (preheader). Overrides template preview_text if provided."""

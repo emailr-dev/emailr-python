@@ -53,6 +53,8 @@ with Emailr(
             "thread_id": "123e4567-e89b-12d3-a456-426614174000",
             "parent_email_id": "123e4567-e89b-12d3-a456-426614174000",
         },
+        "reply_to_email": "support@example.com",
+        "preview_text": "Check out our latest updates...",
     })
 
     # Handle response
