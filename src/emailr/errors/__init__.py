@@ -9,6 +9,7 @@ import sys
 if TYPE_CHECKING:
     from .emailrdefaulterror import EmailrDefaultError
     from .error import Error, ErrorData
+    from .gettemplatepreviewop import NotFoundError, NotFoundErrorData
     from .no_response_error import NoResponseError
     from .responsevalidationerror import ResponseValidationError
 
@@ -18,6 +19,8 @@ __all__ = [
     "Error",
     "ErrorData",
     "NoResponseError",
+    "NotFoundError",
+    "NotFoundErrorData",
     "ResponseValidationError",
 ]
 
@@ -25,6 +28,8 @@ _dynamic_imports: dict[str, str] = {
     "EmailrDefaultError": ".emailrdefaulterror",
     "Error": ".error",
     "ErrorData": ".error",
+    "NotFoundError": ".gettemplatepreviewop",
+    "NotFoundErrorData": ".gettemplatepreviewop",
     "NoResponseError": ".no_response_error",
     "ResponseValidationError": ".responsevalidationerror",
 }

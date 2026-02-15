@@ -3,8 +3,10 @@
 from __future__ import annotations
 from .attachment import Attachment, AttachmentTypedDict
 from .replyto import ReplyTo, ReplyToTypedDict
-from emailr.types import BaseModel, Nullable
+from datetime import datetime
+from emailr.types import BaseModel, UNSET_SENTINEL
 import pydantic
+from pydantic import model_serializer
 from typing import Any, Dict, List, Optional, Union
 from typing_extensions import Annotated, NotRequired, TypeAliasType, TypedDict
 
@@ -15,36 +17,124 @@ ToTypedDict = TypeAliasType("ToTypedDict", Union[str, List[str]])
 To = TypeAliasType("To", Union[str, List[str]])
 
 
+CcTypedDict = TypeAliasType("CcTypedDict", Union[str, List[str]])
+r"""CC recipients"""
+
+
+Cc = TypeAliasType("Cc", Union[str, List[str]])
+r"""CC recipients"""
+
+
+BccTypedDict = TypeAliasType("BccTypedDict", Union[str, List[str]])
+r"""BCC recipients"""
+
+
+Bcc = TypeAliasType("Bcc", Union[str, List[str]])
+r"""BCC recipients"""
+
+
 class SendEmailRequestTypedDict(TypedDict):
-    from_: str
     to: ToTypedDict
-    subject: str
+    from_: NotRequired[str]
+    r"""Sender email. Accepts 'email@example.com' or 'Name <email@example.com>' format. Required if not using a template with from_email set."""
+    cc: NotRequired[CcTypedDict]
+    r"""CC recipients"""
+    bcc: NotRequired[BccTypedDict]
+    r"""BCC recipients"""
+    subject: NotRequired[str]
+    r"""Email subject. Required if not using a template."""
     html: NotRequired[str]
     text: NotRequired[str]
     template_id: NotRequired[str]
-    template_data: NotRequired[Dict[str, Nullable[Any]]]
+    r"""Template ID. When provided, template values are used for subject, html, text, from, reply_to, and preview_text."""
+    template_data: NotRequired[Dict[str, Any]]
+    r"""Variables to render in the template. Must include all variables defined in the template."""
     tags: NotRequired[Dict[str, str]]
     attachments: NotRequired[List[AttachmentTypedDict]]
     reply_to: NotRequired[ReplyToTypedDict]
+    reply_to_email: NotRequired[str]
+    r"""Reply-To email address. Overrides template reply_to if provided."""
+    preview_text: NotRequired[str]
+    r"""Preview text (preheader). Overrides template preview_text if provided."""
+    scheduled_at: NotRequired[datetime]
+    r"""Schedule email to be sent at this time. If not provided, email is sent immediately."""
 
 
 class SendEmailRequest(BaseModel):
-    from_: Annotated[str, pydantic.Field(alias="from")]
-
     to: To
 
-    subject: str
+    from_: Annotated[Optional[str], pydantic.Field(alias="from")] = None
+    r"""Sender email. Accepts 'email@example.com' or 'Name <email@example.com>' format. Required if not using a template with from_email set."""
+
+    cc: Optional[Cc] = None
+    r"""CC recipients"""
+
+    bcc: Optional[Bcc] = None
+    r"""BCC recipients"""
+
+    subject: Optional[str] = None
+    r"""Email subject. Required if not using a template."""
 
     html: Optional[str] = None
 
     text: Optional[str] = None
 
     template_id: Optional[str] = None
+    r"""Template ID. When provided, template values are used for subject, html, text, from, reply_to, and preview_text."""
 
-    template_data: Optional[Dict[str, Nullable[Any]]] = None
+    template_data: Optional[Dict[str, Any]] = None
+    r"""Variables to render in the template. Must include all variables defined in the template."""
 
     tags: Optional[Dict[str, str]] = None
 
     attachments: Optional[List[Attachment]] = None
 
     reply_to: Annotated[Optional[ReplyTo], pydantic.Field(alias="replyTo")] = None
+
+    reply_to_email: Optional[str] = None
+    r"""Reply-To email address. Overrides template reply_to if provided."""
+
+    preview_text: Optional[str] = None
+    r"""Preview text (preheader). Overrides template preview_text if provided."""
+
+    scheduled_at: Optional[datetime] = None
+    r"""Schedule email to be sent at this time. If not provided, email is sent immediately."""
+
+    @model_serializer(mode="wrap")
+    def serialize_model(self, handler):
+        optional_fields = set(
+            [
+                "from",
+                "cc",
+                "bcc",
+                "subject",
+                "html",
+                "text",
+                "template_id",
+                "template_data",
+                "tags",
+                "attachments",
+                "replyTo",
+                "reply_to_email",
+                "preview_text",
+                "scheduled_at",
+            ]
+        )
+        serialized = handler(self)
+        m = {}
+
+        for n, f in type(self).model_fields.items():
+            k = f.alias or n
+            val = serialized.get(k)
+
+            if val != UNSET_SENTINEL:
+                if val is not None or k not in optional_fields:
+                    m[k] = val
+
+        return m
+
+
+try:
+    SendEmailRequest.model_rebuild()
+except NameError:
+    pass
