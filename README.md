@@ -40,10 +40,6 @@ Developer-friendly & type-safe Python SDK specifically catered to leverage *emai
 <!-- Start SDK Installation [installation] -->
 ## SDK Installation
 
-> [!TIP]
-> To finish publishing your SDK to PyPI you must [run your first generation action](https://www.speakeasy.com/docs/github-setup#step-by-step-guide).
-
-
 > [!NOTE]
 > **Python version upgrade policy**
 >
@@ -56,7 +52,7 @@ The SDK can be installed with *uv*, *pip*, or *poetry* package managers.
 *uv* is a fast Python package installer and resolver, designed as a drop-in replacement for pip and pip-tools. It's recommended for its speed and modern Python tooling capabilities.
 
 ```bash
-uv add git+<UNSET>.git
+uv add emailr
 ```
 
 ### PIP
@@ -64,7 +60,7 @@ uv add git+<UNSET>.git
 *PIP* is the default package installer for Python, enabling easy installation and management of packages from PyPI via the command line.
 
 ```bash
-pip install git+<UNSET>.git
+pip install emailr
 ```
 
 ### Poetry
@@ -72,7 +68,7 @@ pip install git+<UNSET>.git
 *Poetry* is a modern tool that simplifies dependency management and package publishing by using a single `pyproject.toml` file to handle project metadata and dependencies.
 
 ```bash
-poetry add git+<UNSET>.git
+poetry add emailr
 ```
 
 ### Shell and script usage with `uv`
@@ -88,7 +84,7 @@ It's also possible to write a standalone Python script without needing to set up
 ```python
 #!/usr/bin/env -S uv run --script
 # /// script
-# requires-python = ">=3.9"
+# requires-python = ">=3.10"
 # dependencies = [
 #     "emailr",
 # ]
@@ -132,34 +128,7 @@ with Emailr(
     bearer_auth=os.getenv("EMAILR_BEARER_AUTH", ""),
 ) as e_client:
 
-    res = e_client.emails.send(request={
-        "from_": "sender@example.com",
-        "to": "recipient@example.com",
-        "subject": "Hello World",
-        "html": "<h1>Hello</h1>",
-        "text": "Hello",
-        "template_id": "123e4567-e89b-12d3-a456-426614174000",
-        "template_data": {
-            "name": "John",
-            "company": "Acme",
-        },
-        "tags": {
-            "campaign": "welcome",
-            "source": "signup",
-        },
-        "attachments": [
-            {
-                "filename": "document.pdf",
-                "content": "JVBERi0xLjQKJe...",
-                "content_type": "application/pdf",
-            },
-        ],
-        "reply_to": {
-            "in_reply_to": "<message-id@domain.com>",
-            "thread_id": "123e4567-e89b-12d3-a456-426614174000",
-            "parent_email_id": "123e4567-e89b-12d3-a456-426614174000",
-        },
-    })
+    res = e_client.templates.get_template_preview(template_id="123e4567-e89b-12d3-a456-426614174000")
 
     # Handle response
     print(res)
@@ -181,34 +150,7 @@ async def main():
         bearer_auth=os.getenv("EMAILR_BEARER_AUTH", ""),
     ) as e_client:
 
-        res = await e_client.emails.send_async(request={
-            "from_": "sender@example.com",
-            "to": "recipient@example.com",
-            "subject": "Hello World",
-            "html": "<h1>Hello</h1>",
-            "text": "Hello",
-            "template_id": "123e4567-e89b-12d3-a456-426614174000",
-            "template_data": {
-                "name": "John",
-                "company": "Acme",
-            },
-            "tags": {
-                "campaign": "welcome",
-                "source": "signup",
-            },
-            "attachments": [
-                {
-                    "filename": "document.pdf",
-                    "content": "JVBERi0xLjQKJe...",
-                    "content_type": "application/pdf",
-                },
-            ],
-            "reply_to": {
-                "in_reply_to": "<message-id@domain.com>",
-                "thread_id": "123e4567-e89b-12d3-a456-426614174000",
-                "parent_email_id": "123e4567-e89b-12d3-a456-426614174000",
-            },
-        })
+        res = await e_client.templates.get_template_preview_async(template_id="123e4567-e89b-12d3-a456-426614174000")
 
         # Handle response
         print(res)
@@ -238,34 +180,7 @@ with Emailr(
     bearer_auth=os.getenv("EMAILR_BEARER_AUTH", ""),
 ) as e_client:
 
-    res = e_client.emails.send(request={
-        "from_": "sender@example.com",
-        "to": "recipient@example.com",
-        "subject": "Hello World",
-        "html": "<h1>Hello</h1>",
-        "text": "Hello",
-        "template_id": "123e4567-e89b-12d3-a456-426614174000",
-        "template_data": {
-            "name": "John",
-            "company": "Acme",
-        },
-        "tags": {
-            "campaign": "welcome",
-            "source": "signup",
-        },
-        "attachments": [
-            {
-                "filename": "document.pdf",
-                "content": "JVBERi0xLjQKJe...",
-                "content_type": "application/pdf",
-            },
-        ],
-        "reply_to": {
-            "in_reply_to": "<message-id@domain.com>",
-            "thread_id": "123e4567-e89b-12d3-a456-426614174000",
-            "parent_email_id": "123e4567-e89b-12d3-a456-426614174000",
-        },
-    })
+    res = e_client.templates.get_template_preview(template_id="123e4567-e89b-12d3-a456-426614174000")
 
     # Handle response
     print(res)
@@ -279,12 +194,6 @@ with Emailr(
 <details open>
 <summary>Available methods</summary>
 
-### [ApiKeys](docs/sdks/apikeys/README.md)
-
-* [create](docs/sdks/apikeys/README.md#create) - Create API key
-* [list](docs/sdks/apikeys/README.md#list) - List API keys
-* [revoke](docs/sdks/apikeys/README.md#revoke) - Revoke API key
-
 ### [Broadcasts](docs/sdks/broadcasts/README.md)
 
 * [create](docs/sdks/broadcasts/README.md#create) - Create broadcast
@@ -292,11 +201,18 @@ with Emailr(
 * [send](docs/sdks/broadcasts/README.md#send) - Send broadcast
 * [get](docs/sdks/broadcasts/README.md#get) - Get broadcast
 
+### [ContactProperties](docs/sdks/contactproperties/README.md)
+
+* [create_property_definition](docs/sdks/contactproperties/README.md#create_property_definition) - Create property definition
+* [list_property_definitions](docs/sdks/contactproperties/README.md#list_property_definitions) - List property definitions
+* [delete_property_definition](docs/sdks/contactproperties/README.md#delete_property_definition) - Delete property definition
+
 ### [Contacts](docs/sdks/contacts/README.md)
 
 * [create](docs/sdks/contacts/README.md#create) - Create a contact
 * [list](docs/sdks/contacts/README.md#list) - List contacts
 * [bulk_create](docs/sdks/contacts/README.md#bulk_create) - Bulk create contacts
+* [get_contact_limit](docs/sdks/contacts/README.md#get_contact_limit) - Get contact limit info
 * [get](docs/sdks/contacts/README.md#get) - Get contact
 * [update](docs/sdks/contacts/README.md#update) - Update contact
 * [delete](docs/sdks/contacts/README.md#delete) - Delete contact
@@ -307,6 +223,7 @@ with Emailr(
 * [list](docs/sdks/domains/README.md#list) - List domains
 * [verify](docs/sdks/domains/README.md#verify) - Verify domain
 * [get_dns_status](docs/sdks/domains/README.md#get_dns_status) - Get DNS status
+* [get_domain](docs/sdks/domains/README.md#get_domain) - Get domain
 * [update](docs/sdks/domains/README.md#update) - Update domain
 * [delete](docs/sdks/domains/README.md#delete) - Delete domain
 
@@ -315,37 +232,47 @@ with Emailr(
 * [send](docs/sdks/emails/README.md#send) - Send an email
 * [get](docs/sdks/emails/README.md#get) - Get email by ID
 * [list](docs/sdks/emails/README.md#list) - List emails
+* [forward_email](docs/sdks/emails/README.md#forward_email) - Forward an email
 
-### [Logs](docs/sdks/logs/README.md)
+### [ForwardingRules](docs/sdks/forwardingrules/README.md)
 
-* [list](docs/sdks/logs/README.md#list) - Get email logs
+* [create_forwarding_rule](docs/sdks/forwardingrules/README.md#create_forwarding_rule) - Create forwarding rule
+* [list_forwarding_rules](docs/sdks/forwardingrules/README.md#list_forwarding_rules) - List forwarding rules
+* [delete_forwarding_rule](docs/sdks/forwardingrules/README.md#delete_forwarding_rule) - Delete forwarding rule
 
-### [Metrics](docs/sdks/metrics/README.md)
+### [Import](docs/sdks/import/README.md)
 
-* [get_usage](docs/sdks/metrics/README.md#get_usage) - Get usage metrics
-* [get_emails](docs/sdks/metrics/README.md#get_emails) - Get email metrics
+* [csv_import_preview](docs/sdks/import/README.md#csv_import_preview) - Preview CSV import
+* [csv_import](docs/sdks/import/README.md#csv_import) - Import contacts from CSV
+
+### [Invitations](docs/sdks/invitations/README.md)
+
+* [create_invitation](docs/sdks/invitations/README.md#create_invitation) - Create team invitation
+* [list_invitations](docs/sdks/invitations/README.md#list_invitations) - List pending invitations
+* [cancel_invitation](docs/sdks/invitations/README.md#cancel_invitation) - Cancel invitation
+* [get_invitation_details](docs/sdks/invitations/README.md#get_invitation_details) - Get invitation details (public)
+* [accept_invitation](docs/sdks/invitations/README.md#accept_invitation) - Accept invitation
 
 ### [Segments](docs/sdks/segments/README.md)
 
 * [create](docs/sdks/segments/README.md#create) - Create segment
 * [list](docs/sdks/segments/README.md#list) - List segments
+* [update_segment](docs/sdks/segments/README.md#update_segment) - Update segment
+* [delete_segment](docs/sdks/segments/README.md#delete_segment) - Delete segment
 * [add_contact](docs/sdks/segments/README.md#add_contact) - Add contact to segment
-
-### [Settings](docs/sdks/settings/README.md)
-
-* [get_organization](docs/sdks/settings/README.md#get_organization) - Get organization settings
-* [update_organization](docs/sdks/settings/README.md#update_organization) - Update organization settings
-* [get_team](docs/sdks/settings/README.md#get_team) - Get team members
-* [get_unsubscribe](docs/sdks/settings/README.md#get_unsubscribe) - Get unsubscribe settings
-* [update_unsubscribe](docs/sdks/settings/README.md#update_unsubscribe) - Update unsubscribe settings
+* [get_segment_contacts](docs/sdks/segments/README.md#get_segment_contacts) - Get segment contacts
+* [bulk_add_contacts_to_segment](docs/sdks/segments/README.md#bulk_add_contacts_to_segment) - Bulk add contacts to segment
 
 ### [Templates](docs/sdks/templates/README.md)
 
+* [get_template_preview](docs/sdks/templates/README.md#get_template_preview) - Get template preview (public)
 * [create](docs/sdks/templates/README.md#create) - Create a template
 * [list](docs/sdks/templates/README.md#list) - List templates
 * [get](docs/sdks/templates/README.md#get) - Get template
 * [update](docs/sdks/templates/README.md#update) - Update template
 * [delete](docs/sdks/templates/README.md#delete) - Delete template
+* [update_template_preview](docs/sdks/templates/README.md#update_template_preview) - Update template preview
+* [publish_template](docs/sdks/templates/README.md#publish_template) - Publish template
 
 ### [Webhooks](docs/sdks/webhooks/README.md)
 
@@ -374,34 +301,7 @@ with Emailr(
     bearer_auth=os.getenv("EMAILR_BEARER_AUTH", ""),
 ) as e_client:
 
-    res = e_client.emails.send(request={
-        "from_": "sender@example.com",
-        "to": "recipient@example.com",
-        "subject": "Hello World",
-        "html": "<h1>Hello</h1>",
-        "text": "Hello",
-        "template_id": "123e4567-e89b-12d3-a456-426614174000",
-        "template_data": {
-            "name": "John",
-            "company": "Acme",
-        },
-        "tags": {
-            "campaign": "welcome",
-            "source": "signup",
-        },
-        "attachments": [
-            {
-                "filename": "document.pdf",
-                "content": "JVBERi0xLjQKJe...",
-                "content_type": "application/pdf",
-            },
-        ],
-        "reply_to": {
-            "in_reply_to": "<message-id@domain.com>",
-            "thread_id": "123e4567-e89b-12d3-a456-426614174000",
-            "parent_email_id": "123e4567-e89b-12d3-a456-426614174000",
-        },
-    },
+    res = e_client.templates.get_template_preview(template_id="123e4567-e89b-12d3-a456-426614174000",
         RetryConfig("backoff", BackoffStrategy(1, 50, 1.1, 100), False))
 
     # Handle response
@@ -421,34 +321,7 @@ with Emailr(
     bearer_auth=os.getenv("EMAILR_BEARER_AUTH", ""),
 ) as e_client:
 
-    res = e_client.emails.send(request={
-        "from_": "sender@example.com",
-        "to": "recipient@example.com",
-        "subject": "Hello World",
-        "html": "<h1>Hello</h1>",
-        "text": "Hello",
-        "template_id": "123e4567-e89b-12d3-a456-426614174000",
-        "template_data": {
-            "name": "John",
-            "company": "Acme",
-        },
-        "tags": {
-            "campaign": "welcome",
-            "source": "signup",
-        },
-        "attachments": [
-            {
-                "filename": "document.pdf",
-                "content": "JVBERi0xLjQKJe...",
-                "content_type": "application/pdf",
-            },
-        ],
-        "reply_to": {
-            "in_reply_to": "<message-id@domain.com>",
-            "thread_id": "123e4567-e89b-12d3-a456-426614174000",
-            "parent_email_id": "123e4567-e89b-12d3-a456-426614174000",
-        },
-    })
+    res = e_client.templates.get_template_preview(template_id="123e4567-e89b-12d3-a456-426614174000")
 
     # Handle response
     print(res)
@@ -482,34 +355,7 @@ with Emailr(
     res = None
     try:
 
-        res = e_client.emails.send(request={
-            "from_": "sender@example.com",
-            "to": "recipient@example.com",
-            "subject": "Hello World",
-            "html": "<h1>Hello</h1>",
-            "text": "Hello",
-            "template_id": "123e4567-e89b-12d3-a456-426614174000",
-            "template_data": {
-                "name": "John",
-                "company": "Acme",
-            },
-            "tags": {
-                "campaign": "welcome",
-                "source": "signup",
-            },
-            "attachments": [
-                {
-                    "filename": "document.pdf",
-                    "content": "JVBERi0xLjQKJe...",
-                    "content_type": "application/pdf",
-                },
-            ],
-            "reply_to": {
-                "in_reply_to": "<message-id@domain.com>",
-                "thread_id": "123e4567-e89b-12d3-a456-426614174000",
-                "parent_email_id": "123e4567-e89b-12d3-a456-426614174000",
-            },
-        })
+        res = e_client.templates.get_template_preview(template_id="123e4567-e89b-12d3-a456-426614174000")
 
         # Handle response
         print(res)
@@ -524,18 +370,17 @@ with Emailr(
         print(e.raw_response)
 
         # Depending on the method different errors may be thrown
-        if isinstance(e, errors.Error):
+        if isinstance(e, errors.NotFoundError):
             print(e.data.error)  # str
-            print(e.data.code)  # Optional[str]
-            print(e.data.details)  # OptionalNullable[Any]
+            print(e.data.code)  # str
 ```
 
 ### Error Classes
 **Primary errors:**
 * [`EmailrError`](./src/emailr/errors/emailrerror.py): The base class for HTTP error responses.
-  * [`Error`](./src/emailr/errors/error.py): Generic error.
+  * [`Error`](./src/emailr/errors/error.py): *
 
-<details><summary>Less common errors (5)</summary>
+<details><summary>Less common errors (6)</summary>
 
 <br />
 
@@ -546,9 +391,12 @@ with Emailr(
 
 
 **Inherit from [`EmailrError`](./src/emailr/errors/emailrerror.py)**:
+* [`NotFoundError`](./src/emailr/errors/notfounderror.py): Template not found or no preview exists. Status code `404`. Applicable to 1 of 55 methods.*
 * [`ResponseValidationError`](./src/emailr/errors/responsevalidationerror.py): Type mismatch between the response data and the expected Pydantic model. Provides access to the Pydantic validation error via the `cause` attribute.
 
 </details>
+
+\* Check [the method documentation](#available-resources-and-operations) to see if the error is applicable.
 <!-- End Error Handling [errors] -->
 
 <!-- Start Server Selection [server] -->
@@ -567,34 +415,7 @@ with Emailr(
     bearer_auth=os.getenv("EMAILR_BEARER_AUTH", ""),
 ) as e_client:
 
-    res = e_client.emails.send(request={
-        "from_": "sender@example.com",
-        "to": "recipient@example.com",
-        "subject": "Hello World",
-        "html": "<h1>Hello</h1>",
-        "text": "Hello",
-        "template_id": "123e4567-e89b-12d3-a456-426614174000",
-        "template_data": {
-            "name": "John",
-            "company": "Acme",
-        },
-        "tags": {
-            "campaign": "welcome",
-            "source": "signup",
-        },
-        "attachments": [
-            {
-                "filename": "document.pdf",
-                "content": "JVBERi0xLjQKJe...",
-                "content_type": "application/pdf",
-            },
-        ],
-        "reply_to": {
-            "in_reply_to": "<message-id@domain.com>",
-            "thread_id": "123e4567-e89b-12d3-a456-426614174000",
-            "parent_email_id": "123e4567-e89b-12d3-a456-426614174000",
-        },
-    })
+    res = e_client.templates.get_template_preview(template_id="123e4567-e89b-12d3-a456-426614174000")
 
     # Handle response
     print(res)
