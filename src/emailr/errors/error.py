@@ -3,7 +3,7 @@
 from __future__ import annotations
 from dataclasses import dataclass, field
 from emailr.errors import EmailrError
-from emailr.types import BaseModel, OptionalNullable, UNSET
+from emailr.types import BaseModel
 import httpx
 from typing import Any, Optional
 
@@ -11,7 +11,7 @@ from typing import Any, Optional
 class ErrorData(BaseModel):
     error: str
     code: Optional[str] = None
-    details: OptionalNullable[Any] = UNSET
+    details: Optional[Any] = None
 
 
 @dataclass(unsafe_hash=True)
