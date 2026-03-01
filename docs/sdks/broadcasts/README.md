@@ -31,6 +31,7 @@ with Emailr(
         "name": "Newsletter - January 2024",
         "subject": "Your monthly update",
         "from_email": "newsletter@example.com",
+        "topic_id": "123e4567-e89b-12d3-a456-426614174000",
     })
 
     # Handle response

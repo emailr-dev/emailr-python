@@ -9,6 +9,7 @@ Contact management
 * [create](#create) - Create a contact
 * [list](#list) - List contacts
 * [bulk_create](#bulk_create) - Bulk create contacts
+* [get_contact_limit](#get_contact_limit) - Get contact limit info
 * [get](#get) - Get contact
 * [update](#update) - Update contact
 * [delete](#delete) - Delete contact
@@ -148,6 +149,46 @@ with Emailr(
 | errors.Error              | 401                       | application/json          |
 | errors.EmailrDefaultError | 4XX, 5XX                  | \*/\*                     |
 
+## get_contact_limit
+
+Get the organization's contact limit, current count, and remaining available slots
+
+### Example Usage
+
+<!-- UsageSnippet language="python" operationID="getContactLimit" method="get" path="/v1/contacts/limit" -->
+```python
+from emailr import Emailr
+import os
+
+
+with Emailr(
+    bearer_auth=os.getenv("EMAILR_BEARER_AUTH", ""),
+) as e_client:
+
+    res = e_client.contacts.get_contact_limit()
+
+    # Handle response
+    print(res)
+
+```
+
+### Parameters
+
+| Parameter                                                           | Type                                                                | Required                                                            | Description                                                         |
+| ------------------------------------------------------------------- | ------------------------------------------------------------------- | ------------------------------------------------------------------- | ------------------------------------------------------------------- |
+| `retries`                                                           | [Optional[utils.RetryConfig]](../../models/utils/retryconfig.md)    | :heavy_minus_sign:                                                  | Configuration to override the default retry behavior of the client. |
+
+### Response
+
+**[models.GetContactLimitResponse](../../models/getcontactlimitresponse.md)**
+
+### Errors
+
+| Error Type                | Status Code               | Content Type              |
+| ------------------------- | ------------------------- | ------------------------- |
+| errors.Error              | 401                       | application/json          |
+| errors.EmailrDefaultError | 4XX, 5XX                  | \*/\*                     |
+
 ## get
 
 Get a specific contact by ID
@@ -217,15 +258,15 @@ with Emailr(
 
 ### Parameters
 
-| Parameter                                                           | Type                                                                | Required                                                            | Description                                                         | Example                                                             |
-| ------------------------------------------------------------------- | ------------------------------------------------------------------- | ------------------------------------------------------------------- | ------------------------------------------------------------------- | ------------------------------------------------------------------- |
-| `id`                                                                | *str*                                                               | :heavy_check_mark:                                                  | N/A                                                                 | 123e4567-e89b-12d3-a456-426614174000                                |
-| `email`                                                             | *Optional[str]*                                                     | :heavy_minus_sign:                                                  | N/A                                                                 | contact@example.com                                                 |
-| `first_name`                                                        | *Optional[str]*                                                     | :heavy_minus_sign:                                                  | N/A                                                                 | John                                                                |
-| `last_name`                                                         | *Optional[str]*                                                     | :heavy_minus_sign:                                                  | N/A                                                                 | Doe                                                                 |
-| `subscribed`                                                        | *Optional[bool]*                                                    | :heavy_minus_sign:                                                  | N/A                                                                 | true                                                                |
-| `metadata`                                                          | Dict[str, *Nullable[Any]*]                                          | :heavy_minus_sign:                                                  | N/A                                                                 | {<br/>"source": "website",<br/>"plan": "pro"<br/>}                  |
-| `retries`                                                           | [Optional[utils.RetryConfig]](../../models/utils/retryconfig.md)    | :heavy_minus_sign:                                                  | Configuration to override the default retry behavior of the client. |                                                                     |
+| Parameter                                                                                                | Type                                                                                                     | Required                                                                                                 | Description                                                                                              | Example                                                                                                  |
+| -------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------- |
+| `id`                                                                                                     | *str*                                                                                                    | :heavy_check_mark:                                                                                       | N/A                                                                                                      | 123e4567-e89b-12d3-a456-426614174000                                                                     |
+| `email`                                                                                                  | *Optional[str]*                                                                                          | :heavy_minus_sign:                                                                                       | N/A                                                                                                      | contact@example.com                                                                                      |
+| `first_name`                                                                                             | *Optional[str]*                                                                                          | :heavy_minus_sign:                                                                                       | N/A                                                                                                      | John                                                                                                     |
+| `last_name`                                                                                              | *Optional[str]*                                                                                          | :heavy_minus_sign:                                                                                       | N/A                                                                                                      | Doe                                                                                                      |
+| `subscribed`                                                                                             | *Optional[bool]*                                                                                         | :heavy_minus_sign:                                                                                       | N/A                                                                                                      | true                                                                                                     |
+| `metadata`                                                                                               | Dict[str, [Nullable[models.UpdateContactRequestMetadata]](../../models/updatecontactrequestmetadata.md)] | :heavy_minus_sign:                                                                                       | Custom properties for the contact. Supports string, number, boolean, and date (as ISO string) values.    | {<br/>"source": "website",<br/>"plan": "pro",<br/>"active": true,<br/>"score": 100,<br/>"signup_date": "2024-01-15"<br/>} |
+| `retries`                                                                                                | [Optional[utils.RetryConfig]](../../models/utils/retryconfig.md)                                         | :heavy_minus_sign:                                                                                       | Configuration to override the default retry behavior of the client.                                      |                                                                                                          |
 
 ### Response
 

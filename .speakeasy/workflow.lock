@@ -1,20 +1,21 @@
-speakeasyVersion: 1.680.11
+speakeasyVersion: 1.736.1
 sources:
     Emailr API:
         sourceNamespace: emailr-api
-        sourceRevisionDigest: sha256:5f79157c5d406a27546248f2a05732dfc4e55e683ffd9ae0a57f33020d380755
-        sourceBlobDigest: sha256:e33dfe7038efa22ed6bc173c6fab3e08bccfb61731f424ed495aab29a88e17e0
+        sourceRevisionDigest: sha256:624eedf4e32a7fdd14bd9692aba4a225a1ee219d3bba23d403c35ff88a4b9ec3
+        sourceBlobDigest: sha256:166ed3c15c6cd403c0cd6db605c813a6dc14359ce2ebef0cf036db7902cc7741
         tags:
             - latest
+            - speakeasy-sdk-regen-1770691976
             - 1.0.0
 targets:
     emailr:
         source: Emailr API
         sourceNamespace: emailr-api
-        sourceRevisionDigest: sha256:5f79157c5d406a27546248f2a05732dfc4e55e683ffd9ae0a57f33020d380755
-        sourceBlobDigest: sha256:e33dfe7038efa22ed6bc173c6fab3e08bccfb61731f424ed495aab29a88e17e0
+        sourceRevisionDigest: sha256:624eedf4e32a7fdd14bd9692aba4a225a1ee219d3bba23d403c35ff88a4b9ec3
+        sourceBlobDigest: sha256:166ed3c15c6cd403c0cd6db605c813a6dc14359ce2ebef0cf036db7902cc7741
         codeSamplesNamespace: emailr-api-python-code-samples
-        codeSamplesRevisionDigest: sha256:6b70f5c7df5630ae5821c1a64ba65916e4cd4da108955f7e5ae284a588536424
+        codeSamplesRevisionDigest: sha256:5f2c52d60db06c9be3d1b5585ed8b55b330d766b2ca13c18bb869b49288ffd17
 workflow:
     workflowVersion: 1.0.0
     speakeasyVersion: latest
@@ -31,6 +32,9 @@ workflow:
         emailr:
             target: python
             source: Emailr API
+            publish:
+                pypi:
+                    token: $pypi_token
             codeSamples:
                 registry:
                     location: registry.speakeasyapi.dev/hormo/emailr/emailr-api-python-code-samples

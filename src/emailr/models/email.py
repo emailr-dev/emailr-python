@@ -21,19 +21,20 @@ class EmailTypedDict(TypedDict):
     status: str
     ses_message_id: Nullable[str]
     broadcast_id: Nullable[str]
-    metadata: Nullable[Dict[str, Nullable[Any]]]
+    metadata: Nullable[Dict[str, Any]]
     sent_at: Nullable[datetime]
     delivered_at: Nullable[datetime]
     opened_at: Nullable[datetime]
     clicked_at: Nullable[datetime]
     bounced_at: Nullable[datetime]
     complained_at: Nullable[datetime]
+    scheduled_at: Nullable[datetime]
     created_at: datetime
     thread_id: Nullable[str]
     parent_email_id: Nullable[str]
-    attachments: Nullable[List[Nullable[Any]]]
-    clicked_links: Nullable[List[Nullable[Any]]]
-    opens: Nullable[List[Nullable[Any]]]
+    attachments: Nullable[List[Any]]
+    clicked_links: Nullable[List[Any]]
+    opens: Nullable[List[Any]]
 
 
 class Email(BaseModel):
@@ -61,7 +62,7 @@ class Email(BaseModel):
 
     broadcast_id: Nullable[str]
 
-    metadata: Nullable[Dict[str, Nullable[Any]]]
+    metadata: Nullable[Dict[str, Any]]
 
     sent_at: Nullable[datetime]
 
@@ -75,63 +76,30 @@ class Email(BaseModel):
 
     complained_at: Nullable[datetime]
 
+    scheduled_at: Nullable[datetime]
+
     created_at: datetime
 
     thread_id: Nullable[str]
 
     parent_email_id: Nullable[str]
 
-    attachments: Nullable[List[Nullable[Any]]]
+    attachments: Nullable[List[Any]]
 
-    clicked_links: Nullable[List[Nullable[Any]]]
+    clicked_links: Nullable[List[Any]]
 
-    opens: Nullable[List[Nullable[Any]]]
+    opens: Nullable[List[Any]]
 
     @model_serializer(mode="wrap")
     def serialize_model(self, handler):
-        optional_fields = []
-        nullable_fields = [
-            "subject",
-            "html_content",
-            "text_content",
-            "template_id",
-            "ses_message_id",
-            "broadcast_id",
-            "metadata",
-            "sent_at",
-            "delivered_at",
-            "opened_at",
-            "clicked_at",
-            "bounced_at",
-            "complained_at",
-            "thread_id",
-            "parent_email_id",
-            "attachments",
-            "clicked_links",
-            "opens",
-        ]
-        null_default_fields = []
-
         serialized = handler(self)
-
         m = {}
 
         for n, f in type(self).model_fields.items():
             k = f.alias or n
             val = serialized.get(k)
-            serialized.pop(k, None)
 
-            optional_nullable = k in optional_fields and k in nullable_fields
-            is_set = (
-                self.__pydantic_fields_set__.intersection({n})
-                or k in null_default_fields
-            )  # pylint: disable=no-member
-
-            if val is not None and val != UNSET_SENTINEL:
-                m[k] = val
-            elif val != UNSET_SENTINEL and (
-                not k in optional_fields or (optional_nullable and is_set)
-            ):
+            if val != UNSET_SENTINEL:
                 m[k] = val
 
         return m

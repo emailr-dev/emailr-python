@@ -10,6 +10,7 @@ Domain verification and management
 * [list](#list) - List domains
 * [verify](#verify) - Verify domain
 * [get_dns_status](#get_dns_status) - Get DNS status
+* [get_domain](#get_domain) - Get domain
 * [update](#update) - Update domain
 * [delete](#delete) - Delete domain
 
@@ -170,6 +171,47 @@ with Emailr(
 ### Response
 
 **[Dict[str, models.DNSVerificationStatus]](../../models/.md)**
+
+### Errors
+
+| Error Type                | Status Code               | Content Type              |
+| ------------------------- | ------------------------- | ------------------------- |
+| errors.Error              | 404                       | application/json          |
+| errors.EmailrDefaultError | 4XX, 5XX                  | \*/\*                     |
+
+## get_domain
+
+Get a specific domain by ID
+
+### Example Usage
+
+<!-- UsageSnippet language="python" operationID="getDomain" method="get" path="/v1/domains/{id}" -->
+```python
+from emailr import Emailr
+import os
+
+
+with Emailr(
+    bearer_auth=os.getenv("EMAILR_BEARER_AUTH", ""),
+) as e_client:
+
+    res = e_client.domains.get_domain(id="123e4567-e89b-12d3-a456-426614174000")
+
+    # Handle response
+    print(res)
+
+```
+
+### Parameters
+
+| Parameter                                                           | Type                                                                | Required                                                            | Description                                                         | Example                                                             |
+| ------------------------------------------------------------------- | ------------------------------------------------------------------- | ------------------------------------------------------------------- | ------------------------------------------------------------------- | ------------------------------------------------------------------- |
+| `id`                                                                | *str*                                                               | :heavy_check_mark:                                                  | N/A                                                                 | 123e4567-e89b-12d3-a456-426614174000                                |
+| `retries`                                                           | [Optional[utils.RetryConfig]](../../models/utils/retryconfig.md)    | :heavy_minus_sign:                                                  | Configuration to override the default retry behavior of the client. |                                                                     |
+
+### Response
+
+**[models.Domain](../../models/domain.md)**
 
 ### Errors
 

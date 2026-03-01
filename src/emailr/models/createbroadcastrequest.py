@@ -2,7 +2,8 @@
 
 from __future__ import annotations
 from datetime import datetime
-from emailr.types import BaseModel
+from emailr.types import BaseModel, UNSET_SENTINEL
+from pydantic import model_serializer
 from typing import Optional
 from typing_extensions import NotRequired, TypedDict
 
@@ -13,6 +14,8 @@ class CreateBroadcastRequestTypedDict(TypedDict):
     from_email: str
     template_id: NotRequired[str]
     segment_id: NotRequired[str]
+    topic_id: NotRequired[str]
+    r"""Optional topic ID to categorize the broadcast for unsubscription management"""
     html_content: NotRequired[str]
     text_content: NotRequired[str]
     scheduled_at: NotRequired[datetime]
@@ -29,8 +32,36 @@ class CreateBroadcastRequest(BaseModel):
 
     segment_id: Optional[str] = None
 
+    topic_id: Optional[str] = None
+    r"""Optional topic ID to categorize the broadcast for unsubscription management"""
+
     html_content: Optional[str] = None
 
     text_content: Optional[str] = None
 
     scheduled_at: Optional[datetime] = None
+
+    @model_serializer(mode="wrap")
+    def serialize_model(self, handler):
+        optional_fields = set(
+            [
+                "template_id",
+                "segment_id",
+                "topic_id",
+                "html_content",
+                "text_content",
+                "scheduled_at",
+            ]
+        )
+        serialized = handler(self)
+        m = {}
+
+        for n, f in type(self).model_fields.items():
+            k = f.alias or n
+            val = serialized.get(k)
+
+            if val != UNSET_SENTINEL:
+                if val is not None or k not in optional_fields:
+                    m[k] = val
+
+        return m
