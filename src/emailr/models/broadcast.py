@@ -4,6 +4,7 @@ from __future__ import annotations
 from datetime import datetime
 from emailr.types import BaseModel, Nullable, UNSET_SENTINEL
 from pydantic import model_serializer
+from typing import List
 from typing_extensions import TypedDict
 
 
@@ -13,8 +14,19 @@ class BroadcastTypedDict(TypedDict):
     name: str
     subject: str
     from_email: str
+    from_name: Nullable[str]
+    reply_to: Nullable[str]
+    preview_text: Nullable[str]
     template_id: Nullable[str]
     segment_id: Nullable[str]
+    topic_id: Nullable[str]
+    r"""Topic ID for categorizing the broadcast"""
+    inbox_id: Nullable[str]
+    r"""Associated inbox ID for sender identity defaults"""
+    inbox_ids: Nullable[List[str]]
+    r"""Inbox IDs used for inbox rotation"""
+    sending_speed: Nullable[str]
+    r"""Sending speed setting for the broadcast"""
     status: str
     total_recipients: Nullable[float]
     sent_count: Nullable[float]
@@ -25,6 +37,8 @@ class BroadcastTypedDict(TypedDict):
     scheduled_at: Nullable[datetime]
     started_at: Nullable[datetime]
     completed_at: Nullable[datetime]
+    tags: List[str]
+    r"""Tags for categorization."""
     created_by: Nullable[str]
     created_at: datetime
 
@@ -40,9 +54,27 @@ class Broadcast(BaseModel):
 
     from_email: str
 
+    from_name: Nullable[str]
+
+    reply_to: Nullable[str]
+
+    preview_text: Nullable[str]
+
     template_id: Nullable[str]
 
     segment_id: Nullable[str]
+
+    topic_id: Nullable[str]
+    r"""Topic ID for categorizing the broadcast"""
+
+    inbox_id: Nullable[str]
+    r"""Associated inbox ID for sender identity defaults"""
+
+    inbox_ids: Nullable[List[str]]
+    r"""Inbox IDs used for inbox rotation"""
+
+    sending_speed: Nullable[str]
+    r"""Sending speed setting for the broadcast"""
 
     status: str
 
@@ -64,49 +96,23 @@ class Broadcast(BaseModel):
 
     completed_at: Nullable[datetime]
 
+    tags: List[str]
+    r"""Tags for categorization."""
+
     created_by: Nullable[str]
 
     created_at: datetime
 
     @model_serializer(mode="wrap")
     def serialize_model(self, handler):
-        optional_fields = []
-        nullable_fields = [
-            "template_id",
-            "segment_id",
-            "total_recipients",
-            "sent_count",
-            "delivered_count",
-            "opened_count",
-            "clicked_count",
-            "bounced_count",
-            "scheduled_at",
-            "started_at",
-            "completed_at",
-            "created_by",
-        ]
-        null_default_fields = []
-
         serialized = handler(self)
-
         m = {}
 
         for n, f in type(self).model_fields.items():
             k = f.alias or n
-            val = serialized.get(k)
-            serialized.pop(k, None)
+            val = serialized.get(k, serialized.get(n))
 
-            optional_nullable = k in optional_fields and k in nullable_fields
-            is_set = (
-                self.__pydantic_fields_set__.intersection({n})
-                or k in null_default_fields
-            )  # pylint: disable=no-member
-
-            if val is not None and val != UNSET_SENTINEL:
-                m[k] = val
-            elif val != UNSET_SENTINEL and (
-                not k in optional_fields or (optional_nullable and is_set)
-            ):
+            if val != UNSET_SENTINEL:
                 m[k] = val
 
         return m

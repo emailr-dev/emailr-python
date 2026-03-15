@@ -8,3 +8,5 @@
 | `limit`            | *Optional[str]*    | :heavy_minus_sign: | N/A                | 100                |
 | `offset`           | *Optional[str]*    | :heavy_minus_sign: | N/A                | 0                  |
 | `subscribed`       | *Optional[str]*    | :heavy_minus_sign: | N/A                | true               |
+| `search`           | *Optional[str]*    | :heavy_minus_sign: | N/A                | john               |
+| `tags`             | *Optional[str]*    | :heavy_minus_sign: | N/A                | newsletter,vip     |
