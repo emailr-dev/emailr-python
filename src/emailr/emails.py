@@ -395,6 +395,12 @@ class Emails(BaseSDK):
         *,
         page: Optional[str] = "1",
         limit: Optional[str] = "50",
+        email: Optional[str] = None,
+        broadcast_id: Optional[str] = None,
+        email_id: Optional[str] = None,
+        domain: Optional[str] = None,
+        template_id: Optional[str] = None,
+        status: Optional[str] = None,
         retries: OptionalNullable[utils.RetryConfig] = UNSET,
         server_url: Optional[str] = None,
         timeout_ms: Optional[int] = None,
@@ -402,10 +408,16 @@ class Emails(BaseSDK):
     ) -> models.ListEmailsResponse:
         r"""List emails
 
-        Get a paginated list of sent emails
+        Get a paginated list of sent emails with optional filters
 
         :param page:
         :param limit:
+        :param email:
+        :param broadcast_id:
+        :param email_id:
+        :param domain:
+        :param template_id:
+        :param status:
         :param retries: Override the default retry configuration for this method
         :param server_url: Override the default server URL for this method
         :param timeout_ms: Override the default request timeout configuration for this method in milliseconds
@@ -424,6 +436,12 @@ class Emails(BaseSDK):
         request = models.ListEmailsRequest(
             page=page,
             limit=limit,
+            email=email,
+            broadcast_id=broadcast_id,
+            email_id=email_id,
+            domain=domain,
+            template_id=template_id,
+            status=status,
         )
 
         req = self._build_request(
@@ -490,6 +508,12 @@ class Emails(BaseSDK):
         *,
         page: Optional[str] = "1",
         limit: Optional[str] = "50",
+        email: Optional[str] = None,
+        broadcast_id: Optional[str] = None,
+        email_id: Optional[str] = None,
+        domain: Optional[str] = None,
+        template_id: Optional[str] = None,
+        status: Optional[str] = None,
         retries: OptionalNullable[utils.RetryConfig] = UNSET,
         server_url: Optional[str] = None,
         timeout_ms: Optional[int] = None,
@@ -497,10 +521,16 @@ class Emails(BaseSDK):
     ) -> models.ListEmailsResponse:
         r"""List emails
 
-        Get a paginated list of sent emails
+        Get a paginated list of sent emails with optional filters
 
         :param page:
         :param limit:
+        :param email:
+        :param broadcast_id:
+        :param email_id:
+        :param domain:
+        :param template_id:
+        :param status:
         :param retries: Override the default retry configuration for this method
         :param server_url: Override the default server URL for this method
         :param timeout_ms: Override the default request timeout configuration for this method in milliseconds
@@ -519,6 +549,12 @@ class Emails(BaseSDK):
         request = models.ListEmailsRequest(
             page=page,
             limit=limit,
+            email=email,
+            broadcast_id=broadcast_id,
+            email_id=email_id,
+            domain=domain,
+            template_id=template_id,
+            status=status,
         )
 
         req = self._build_request_async(
@@ -565,6 +601,200 @@ class Emails(BaseSDK):
         if utils.match_response(http_res, "200", "application/json"):
             return unmarshal_json_response(models.ListEmailsResponse, http_res)
         if utils.match_response(http_res, "401", "application/json"):
+            response_data = unmarshal_json_response(errors.ErrorData, http_res)
+            raise errors.Error(response_data, http_res)
+        if utils.match_response(http_res, "4XX", "*"):
+            http_res_text = await utils.stream_to_text_async(http_res)
+            raise errors.EmailrDefaultError(
+                "API error occurred", http_res, http_res_text
+            )
+        if utils.match_response(http_res, "5XX", "*"):
+            http_res_text = await utils.stream_to_text_async(http_res)
+            raise errors.EmailrDefaultError(
+                "API error occurred", http_res, http_res_text
+            )
+
+        raise errors.EmailrDefaultError("Unexpected response received", http_res)
+
+    def forward_email(
+        self,
+        *,
+        request: Optional[
+            Union[models.ForwardEmailRequest, models.ForwardEmailRequestTypedDict]
+        ] = None,
+        retries: OptionalNullable[utils.RetryConfig] = UNSET,
+        server_url: Optional[str] = None,
+        timeout_ms: Optional[int] = None,
+        http_headers: Optional[Mapping[str, str]] = None,
+    ) -> models.SendEmailResponse:
+        r"""Forward an email
+
+        Forward a received email to other recipients
+
+        :param request: The request object to send.
+        :param retries: Override the default retry configuration for this method
+        :param server_url: Override the default server URL for this method
+        :param timeout_ms: Override the default request timeout configuration for this method in milliseconds
+        :param http_headers: Additional headers to set or replace on requests.
+        """
+        base_url = None
+        url_variables = None
+        if timeout_ms is None:
+            timeout_ms = self.sdk_configuration.timeout_ms
+
+        if server_url is not None:
+            base_url = server_url
+        else:
+            base_url = self._get_url(base_url, url_variables)
+
+        if not isinstance(request, BaseModel):
+            request = utils.unmarshal(request, Optional[models.ForwardEmailRequest])
+        request = cast(Optional[models.ForwardEmailRequest], request)
+
+        req = self._build_request(
+            method="POST",
+            path="/v1/emails/forward",
+            base_url=base_url,
+            url_variables=url_variables,
+            request=request,
+            request_body_required=False,
+            request_has_path_params=False,
+            request_has_query_params=True,
+            user_agent_header="user-agent",
+            accept_header_value="application/json",
+            http_headers=http_headers,
+            security=self.sdk_configuration.security,
+            get_serialized_body=lambda: utils.serialize_request_body(
+                request, False, True, "json", Optional[models.ForwardEmailRequest]
+            ),
+            allow_empty_value=None,
+            timeout_ms=timeout_ms,
+        )
+
+        if retries == UNSET:
+            if self.sdk_configuration.retry_config is not UNSET:
+                retries = self.sdk_configuration.retry_config
+
+        retry_config = None
+        if isinstance(retries, utils.RetryConfig):
+            retry_config = (retries, ["429", "500", "502", "503", "504"])
+
+        http_res = self.do_request(
+            hook_ctx=HookContext(
+                config=self.sdk_configuration,
+                base_url=base_url or "",
+                operation_id="forwardEmail",
+                oauth2_scopes=None,
+                security_source=get_security_from_env(
+                    self.sdk_configuration.security, models.Security
+                ),
+            ),
+            request=req,
+            error_status_codes=["404", "4XX", "5XX"],
+            retry_config=retry_config,
+        )
+
+        response_data: Any = None
+        if utils.match_response(http_res, "200", "application/json"):
+            return unmarshal_json_response(models.SendEmailResponse, http_res)
+        if utils.match_response(http_res, "404", "application/json"):
+            response_data = unmarshal_json_response(errors.ErrorData, http_res)
+            raise errors.Error(response_data, http_res)
+        if utils.match_response(http_res, "4XX", "*"):
+            http_res_text = utils.stream_to_text(http_res)
+            raise errors.EmailrDefaultError(
+                "API error occurred", http_res, http_res_text
+            )
+        if utils.match_response(http_res, "5XX", "*"):
+            http_res_text = utils.stream_to_text(http_res)
+            raise errors.EmailrDefaultError(
+                "API error occurred", http_res, http_res_text
+            )
+
+        raise errors.EmailrDefaultError("Unexpected response received", http_res)
+
+    async def forward_email_async(
+        self,
+        *,
+        request: Optional[
+            Union[models.ForwardEmailRequest, models.ForwardEmailRequestTypedDict]
+        ] = None,
+        retries: OptionalNullable[utils.RetryConfig] = UNSET,
+        server_url: Optional[str] = None,
+        timeout_ms: Optional[int] = None,
+        http_headers: Optional[Mapping[str, str]] = None,
+    ) -> models.SendEmailResponse:
+        r"""Forward an email
+
+        Forward a received email to other recipients
+
+        :param request: The request object to send.
+        :param retries: Override the default retry configuration for this method
+        :param server_url: Override the default server URL for this method
+        :param timeout_ms: Override the default request timeout configuration for this method in milliseconds
+        :param http_headers: Additional headers to set or replace on requests.
+        """
+        base_url = None
+        url_variables = None
+        if timeout_ms is None:
+            timeout_ms = self.sdk_configuration.timeout_ms
+
+        if server_url is not None:
+            base_url = server_url
+        else:
+            base_url = self._get_url(base_url, url_variables)
+
+        if not isinstance(request, BaseModel):
+            request = utils.unmarshal(request, Optional[models.ForwardEmailRequest])
+        request = cast(Optional[models.ForwardEmailRequest], request)
+
+        req = self._build_request_async(
+            method="POST",
+            path="/v1/emails/forward",
+            base_url=base_url,
+            url_variables=url_variables,
+            request=request,
+            request_body_required=False,
+            request_has_path_params=False,
+            request_has_query_params=True,
+            user_agent_header="user-agent",
+            accept_header_value="application/json",
+            http_headers=http_headers,
+            security=self.sdk_configuration.security,
+            get_serialized_body=lambda: utils.serialize_request_body(
+                request, False, True, "json", Optional[models.ForwardEmailRequest]
+            ),
+            allow_empty_value=None,
+            timeout_ms=timeout_ms,
+        )
+
+        if retries == UNSET:
+            if self.sdk_configuration.retry_config is not UNSET:
+                retries = self.sdk_configuration.retry_config
+
+        retry_config = None
+        if isinstance(retries, utils.RetryConfig):
+            retry_config = (retries, ["429", "500", "502", "503", "504"])
+
+        http_res = await self.do_request_async(
+            hook_ctx=HookContext(
+                config=self.sdk_configuration,
+                base_url=base_url or "",
+                operation_id="forwardEmail",
+                oauth2_scopes=None,
+                security_source=get_security_from_env(
+                    self.sdk_configuration.security, models.Security
+                ),
+            ),
+            request=req,
+            error_status_codes=["404", "4XX", "5XX"],
+            retry_config=retry_config,
+        )
+
+        response_data: Any = None
+        if utils.match_response(http_res, "200", "application/json"):
+            return unmarshal_json_response(models.SendEmailResponse, http_res)
+        if utils.match_response(http_res, "404", "application/json"):
             response_data = unmarshal_json_response(errors.ErrorData, http_res)
             raise errors.Error(response_data, http_res)
         if utils.match_response(http_res, "4XX", "*"):
