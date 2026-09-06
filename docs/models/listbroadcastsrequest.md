@@ -1,0 +1,9 @@
+# ListBroadcastsRequest
+
+
+## Fields
+
+| Field                                                                                  | Type                                                                                   | Required                                                                               | Description                                                                            | Example                                                                                |
+| -------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------- |
+| `tags`                                                                                 | *Optional[str]*                                                                        | :heavy_minus_sign:                                                                     | N/A                                                                                    | newsletter,vip                                                                         |
+| `sequence_mode`                                                                        | [Optional[models.ListBroadcastsSequenceMode]](../models/listbroadcastssequencemode.md) | :heavy_minus_sign:                                                                     | Filter campaigns by product type.                                                      |                                                                                        |
