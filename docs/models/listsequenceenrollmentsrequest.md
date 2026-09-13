@@ -1,0 +1,11 @@
+# ListSequenceEnrollmentsRequest
+
+
+## Fields
+
+| Field                                                                                        | Type                                                                                         | Required                                                                                     | Description                                                                                  |
+| -------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------- |
+| `broadcast_id`                                                                               | *str*                                                                                        | :heavy_check_mark:                                                                           | N/A                                                                                          |
+| `status`                                                                                     | [Optional[models.ListSequenceEnrollmentsStatus]](../models/listsequenceenrollmentsstatus.md) | :heavy_minus_sign:                                                                           | N/A                                                                                          |
+| `limit`                                                                                      | *Optional[str]*                                                                              | :heavy_minus_sign:                                                                           | N/A                                                                                          |
+| `offset`                                                                                     | *Optional[str]*                                                                              | :heavy_minus_sign:                                                                           | N/A                                                                                          |

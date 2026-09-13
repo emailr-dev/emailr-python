@@ -2,20 +2,57 @@
 
 from __future__ import annotations
 from datetime import datetime
-from emailr.types import BaseModel
-from typing import Optional
+from emailr.types import BaseModel, UNSET_SENTINEL
+from pydantic import model_serializer
+from typing import List, Literal, Optional
 from typing_extensions import NotRequired, TypedDict
+
+
+CreateBroadcastRequestSendingSpeed = Literal[
+    "auto",
+    "warmup",
+    "very_slow",
+    "slow",
+    "normal",
+    "instant",
+]
+r"""Controls how fast emails are sent. 'auto' scales with recipient count (recommended), 'warmup' ~100/day, 'very_slow' ~100/hr, 'slow' ~1000/hr, 'normal' ~2000/hr, 'instant' sends as fast as possible."""
+
+
+CreateBroadcastRequestSequenceMode = Literal[
+    "sales",
+    "marketing",
+]
+r"""Product type for this send. marketing = standalone campaign emails; sales = threaded outreach follow-ups."""
 
 
 class CreateBroadcastRequestTypedDict(TypedDict):
     name: str
     subject: str
-    from_email: str
-    template_id: NotRequired[str]
+    template_id: str
+    r"""Template ID to use for the broadcast email content. Required."""
+    from_email: NotRequired[str]
+    r"""Sender email address. Required unless inbox_id or inbox_ids is provided."""
+    from_name: NotRequired[str]
+    r"""Display name for the sender. Combined with from_email as 'Name <email>' when sending."""
+    reply_to: NotRequired[str]
+    r"""Reply-To email address for broadcast emails."""
+    preview_text: NotRequired[str]
+    r"""Preview text (preheader) shown in email clients."""
     segment_id: NotRequired[str]
-    html_content: NotRequired[str]
-    text_content: NotRequired[str]
+    topic_id: NotRequired[str]
+    r"""Optional topic ID to categorize the broadcast for unsubscription management"""
     scheduled_at: NotRequired[datetime]
+    inbox_id: NotRequired[str]
+    r"""Optional inbox ID. When provided, the inbox's name, from address, and reply-to address are used as defaults unless explicit values are given. Mutually exclusive with inbox_ids."""
+    inbox_ids: NotRequired[List[str]]
+    r"""Optional array of inbox IDs for inbox rotation. When set, emails are round-robin distributed across these inboxes, each using its own sender identity. Mutually exclusive with inbox_id."""
+    sending_speed: NotRequired[CreateBroadcastRequestSendingSpeed]
+    r"""Controls how fast emails are sent. 'auto' scales with recipient count (recommended), 'warmup' ~100/day, 'very_slow' ~100/hr, 'slow' ~1000/hr, 'normal' ~2000/hr, 'instant' sends as fast as possible."""
+    sequence_mode: NotRequired[CreateBroadcastRequestSequenceMode]
+    r"""Product type for this send. marketing = standalone campaign emails; sales = threaded outreach follow-ups."""
+    tags: NotRequired[List[str]]
+    r"""Tags for categorization. Lowercase, max 50 chars each, max 20 tags."""
 
 
 class CreateBroadcastRequest(BaseModel):
@@ -23,14 +60,70 @@ class CreateBroadcastRequest(BaseModel):
 
     subject: str
 
-    from_email: str
+    template_id: str
+    r"""Template ID to use for the broadcast email content. Required."""
 
-    template_id: Optional[str] = None
+    from_email: Optional[str] = None
+    r"""Sender email address. Required unless inbox_id or inbox_ids is provided."""
+
+    from_name: Optional[str] = None
+    r"""Display name for the sender. Combined with from_email as 'Name <email>' when sending."""
+
+    reply_to: Optional[str] = None
+    r"""Reply-To email address for broadcast emails."""
+
+    preview_text: Optional[str] = None
+    r"""Preview text (preheader) shown in email clients."""
 
     segment_id: Optional[str] = None
 
-    html_content: Optional[str] = None
-
-    text_content: Optional[str] = None
+    topic_id: Optional[str] = None
+    r"""Optional topic ID to categorize the broadcast for unsubscription management"""
 
     scheduled_at: Optional[datetime] = None
+
+    inbox_id: Optional[str] = None
+    r"""Optional inbox ID. When provided, the inbox's name, from address, and reply-to address are used as defaults unless explicit values are given. Mutually exclusive with inbox_ids."""
+
+    inbox_ids: Optional[List[str]] = None
+    r"""Optional array of inbox IDs for inbox rotation. When set, emails are round-robin distributed across these inboxes, each using its own sender identity. Mutually exclusive with inbox_id."""
+
+    sending_speed: Optional[CreateBroadcastRequestSendingSpeed] = None
+    r"""Controls how fast emails are sent. 'auto' scales with recipient count (recommended), 'warmup' ~100/day, 'very_slow' ~100/hr, 'slow' ~1000/hr, 'normal' ~2000/hr, 'instant' sends as fast as possible."""
+
+    sequence_mode: Optional[CreateBroadcastRequestSequenceMode] = "marketing"
+    r"""Product type for this send. marketing = standalone campaign emails; sales = threaded outreach follow-ups."""
+
+    tags: Optional[List[str]] = None
+    r"""Tags for categorization. Lowercase, max 50 chars each, max 20 tags."""
+
+    @model_serializer(mode="wrap")
+    def serialize_model(self, handler):
+        optional_fields = set(
+            [
+                "from_email",
+                "from_name",
+                "reply_to",
+                "preview_text",
+                "segment_id",
+                "topic_id",
+                "scheduled_at",
+                "inbox_id",
+                "inbox_ids",
+                "sending_speed",
+                "sequence_mode",
+                "tags",
+            ]
+        )
+        serialized = handler(self)
+        m = {}
+
+        for n, f in type(self).model_fields.items():
+            k = f.alias or n
+            val = serialized.get(k, serialized.get(n))
+
+            if val != UNSET_SENTINEL:
+                if val is not None or k not in optional_fields:
+                    m[k] = val
+
+        return m
