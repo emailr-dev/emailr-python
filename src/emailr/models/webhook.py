@@ -4,8 +4,16 @@ from __future__ import annotations
 from datetime import datetime
 from emailr.types import BaseModel, Nullable, UNSET_SENTINEL
 from pydantic import model_serializer
-from typing import List
+from typing import List, Literal
 from typing_extensions import TypedDict
+
+
+WebhookType = Literal[
+    "transactional",
+    "domain",
+    "receiving",
+]
+r"""Webhook category type that determines which events the webhook subscribes to"""
 
 
 class WebhookTypedDict(TypedDict):
@@ -13,7 +21,12 @@ class WebhookTypedDict(TypedDict):
     organization_id: str
     name: str
     url: str
+    type: WebhookType
+    r"""Webhook category type that determines which events the webhook subscribes to"""
     events: List[str]
+    r"""Derived list of events based on the webhook type. Read-only."""
+    inbox_ids: Nullable[List[str]]
+    r"""Inbox UUIDs for scoping receiving webhooks. Null for non-receiving types."""
     secret: str
     active: bool
     created_by: Nullable[str]
@@ -29,7 +42,14 @@ class Webhook(BaseModel):
 
     url: str
 
+    type: WebhookType
+    r"""Webhook category type that determines which events the webhook subscribes to"""
+
     events: List[str]
+    r"""Derived list of events based on the webhook type. Read-only."""
+
+    inbox_ids: Nullable[List[str]]
+    r"""Inbox UUIDs for scoping receiving webhooks. Null for non-receiving types."""
 
     secret: str
 
@@ -41,30 +61,14 @@ class Webhook(BaseModel):
 
     @model_serializer(mode="wrap")
     def serialize_model(self, handler):
-        optional_fields = []
-        nullable_fields = ["created_by"]
-        null_default_fields = []
-
         serialized = handler(self)
-
         m = {}
 
         for n, f in type(self).model_fields.items():
             k = f.alias or n
-            val = serialized.get(k)
-            serialized.pop(k, None)
+            val = serialized.get(k, serialized.get(n))
 
-            optional_nullable = k in optional_fields and k in nullable_fields
-            is_set = (
-                self.__pydantic_fields_set__.intersection({n})
-                or k in null_default_fields
-            )  # pylint: disable=no-member
-
-            if val is not None and val != UNSET_SENTINEL:
-                m[k] = val
-            elif val != UNSET_SENTINEL and (
-                not k in optional_fields or (optional_nullable and is_set)
-            ):
+            if val != UNSET_SENTINEL:
                 m[k] = val
 
         return m

@@ -15,61 +15,70 @@ from typing import Any, Callable, Dict, Optional, TYPE_CHECKING, Union, cast
 import weakref
 
 if TYPE_CHECKING:
-    from emailr.api_keys import APIKeys
+    from emailr.automation_webhooks import AutomationWebhooks
     from emailr.broadcasts import Broadcasts
+    from emailr.contact_properties import ContactProperties
     from emailr.contacts import Contacts
     from emailr.domains import Domains
     from emailr.emails import Emails
-    from emailr.logs import Logs
-    from emailr.metrics import Metrics
+    from emailr.forwarding_rules import ForwardingRules
+    from emailr.import_ import Import
+    from emailr.inboxes import Inboxes
+    from emailr.invitations import Invitations
     from emailr.segments import Segments
-    from emailr.settings import Settings
+    from emailr.sequences import Sequences
     from emailr.templates import Templates
+    from emailr.threads import Threads
     from emailr.webhooks import Webhooks
 
 
 class Emailr(BaseSDK):
+    templates: "Templates"
+    r"""Email template management"""
     emails: "Emails"
     r"""Email sending and management"""
     contacts: "Contacts"
     r"""Contact management"""
-    templates: "Templates"
-    r"""Email template management"""
     domains: "Domains"
     r"""Domain verification and management"""
-    api_keys: "APIKeys"
     webhooks: "Webhooks"
     r"""Webhook configuration"""
     broadcasts: "Broadcasts"
     r"""Broadcast campaign management"""
     segments: "Segments"
     r"""Contact segmentation"""
-    metrics: "Metrics"
-    r"""Usage and email metrics"""
-    logs: "Logs"
-    r"""Email event logs"""
-    settings: "Settings"
-    r"""Organization settings"""
+    contact_properties: "ContactProperties"
+    import_: "Import"
+    invitations: "Invitations"
+    forwarding_rules: "ForwardingRules"
+    threads: "Threads"
+    inboxes: "Inboxes"
+    automation_webhooks: "AutomationWebhooks"
+    sequences: "Sequences"
     _sub_sdk_map = {
+        "templates": ("emailr.templates", "Templates"),
         "emails": ("emailr.emails", "Emails"),
         "contacts": ("emailr.contacts", "Contacts"),
-        "templates": ("emailr.templates", "Templates"),
         "domains": ("emailr.domains", "Domains"),
-        "api_keys": ("emailr.api_keys", "APIKeys"),
         "webhooks": ("emailr.webhooks", "Webhooks"),
         "broadcasts": ("emailr.broadcasts", "Broadcasts"),
         "segments": ("emailr.segments", "Segments"),
-        "metrics": ("emailr.metrics", "Metrics"),
-        "logs": ("emailr.logs", "Logs"),
-        "settings": ("emailr.settings", "Settings"),
+        "contact_properties": ("emailr.contact_properties", "ContactProperties"),
+        "import_": ("emailr.import_", "Import"),
+        "invitations": ("emailr.invitations", "Invitations"),
+        "forwarding_rules": ("emailr.forwarding_rules", "ForwardingRules"),
+        "threads": ("emailr.threads", "Threads"),
+        "inboxes": ("emailr.inboxes", "Inboxes"),
+        "automation_webhooks": ("emailr.automation_webhooks", "AutomationWebhooks"),
+        "sequences": ("emailr.sequences", "Sequences"),
     }
 
     def __init__(
         self,
         bearer_auth: Optional[Union[Optional[str], Callable[[], Optional[str]]]] = None,
         server_idx: Optional[int] = None,
-        server_url: Optional[str] = None,
         url_params: Optional[Dict[str, str]] = None,
+        server_url: Optional[str] = None,
         client: Optional[HttpClient] = None,
         async_client: Optional[AsyncHttpClient] = None,
         retry_config: OptionalNullable[RetryConfig] = UNSET,
@@ -109,7 +118,9 @@ class Emailr(BaseSDK):
         ), "The provided async_client must implement the AsyncHttpClient protocol."
 
         security: Any = None
-        if callable(bearer_auth):
+        if bearer_auth is None:
+            security = None
+        elif callable(bearer_auth):
             # pylint: disable=unnecessary-lambda-assignment
             security = lambda: models.Security(bearer_auth=bearer_auth())
         else:
