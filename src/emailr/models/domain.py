@@ -3,10 +3,10 @@
 from __future__ import annotations
 from .domaindnsrecords import DomainDNSRecords, DomainDNSRecordsTypedDict
 from datetime import datetime
-from emailr.types import BaseModel, Nullable, UNSET_SENTINEL
+from emailr.types import BaseModel, Nullable, OptionalNullable, UNSET, UNSET_SENTINEL
 from pydantic import model_serializer
 from typing import List
-from typing_extensions import TypedDict
+from typing_extensions import NotRequired, TypedDict
 
 
 class DomainTypedDict(TypedDict):
@@ -29,6 +29,8 @@ class DomainTypedDict(TypedDict):
     mail_from_verified: Nullable[bool]
     receiving_enabled: Nullable[bool]
     receiving_subdomain: Nullable[str]
+    workspace_id: NotRequired[Nullable[str]]
+    r"""Owning domain workspace. Null only for archived legacy records."""
 
 
 class Domain(BaseModel):
@@ -70,44 +72,45 @@ class Domain(BaseModel):
 
     receiving_subdomain: Nullable[str]
 
+    workspace_id: OptionalNullable[str] = UNSET
+    r"""Owning domain workspace. Null only for archived legacy records."""
+
     @model_serializer(mode="wrap")
     def serialize_model(self, handler):
-        optional_fields = []
-        nullable_fields = [
-            "verification_token",
-            "cloudflare_zone_id",
-            "ses_identity_arn",
-            "verified_at",
-            "dkim_tokens",
-            "dns_records",
-            "dkim_selector",
-            "mail_from_subdomain",
-            "mail_from_verified",
-            "receiving_enabled",
-            "receiving_subdomain",
-        ]
-        null_default_fields = []
-
+        optional_fields = set(["workspace_id"])
+        nullable_fields = set(
+            [
+                "workspace_id",
+                "verification_token",
+                "cloudflare_zone_id",
+                "ses_identity_arn",
+                "verified_at",
+                "dkim_tokens",
+                "dns_records",
+                "dkim_selector",
+                "mail_from_subdomain",
+                "mail_from_verified",
+                "receiving_enabled",
+                "receiving_subdomain",
+            ]
+        )
         serialized = handler(self)
-
         m = {}
 
         for n, f in type(self).model_fields.items():
             k = f.alias or n
-            val = serialized.get(k)
-            serialized.pop(k, None)
+            val = serialized.get(k, serialized.get(n))
+            is_nullable_and_explicitly_set = (
+                k in nullable_fields
+                and (self.__pydantic_fields_set__.intersection({n}))  # pylint: disable=no-member
+            )
 
-            optional_nullable = k in optional_fields and k in nullable_fields
-            is_set = (
-                self.__pydantic_fields_set__.intersection({n})
-                or k in null_default_fields
-            )  # pylint: disable=no-member
-
-            if val is not None and val != UNSET_SENTINEL:
-                m[k] = val
-            elif val != UNSET_SENTINEL and (
-                not k in optional_fields or (optional_nullable and is_set)
-            ):
-                m[k] = val
+            if val != UNSET_SENTINEL:
+                if (
+                    val is not None
+                    or k not in optional_fields
+                    or is_nullable_and_explicitly_set
+                ):
+                    m[k] = val
 
         return m
