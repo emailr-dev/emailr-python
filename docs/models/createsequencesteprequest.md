@@ -1,0 +1,13 @@
+# CreateSequenceStepRequest
+
+
+## Fields
+
+| Field                                                      | Type                                                       | Required                                                   | Description                                                | Example                                                    |
+| ---------------------------------------------------------- | ---------------------------------------------------------- | ---------------------------------------------------------- | ---------------------------------------------------------- | ---------------------------------------------------------- |
+| `step_number`                                              | *Optional[int]*                                            | :heavy_minus_sign:                                         | Position in the sequence. If omitted, appended to the end. |                                                            |
+| `delay_hours`                                              | *int*                                                      | :heavy_check_mark:                                         | Hours to wait before sending this step.                    | 72                                                         |
+| `subject`                                                  | *OptionalNullable[str]*                                    | :heavy_minus_sign:                                         | N/A                                                        |                                                            |
+| `html_content`                                             | *OptionalNullable[str]*                                    | :heavy_minus_sign:                                         | N/A                                                        |                                                            |
+| `text_content`                                             | *OptionalNullable[str]*                                    | :heavy_minus_sign:                                         | N/A                                                        |                                                            |
+| `template_id`                                              | *OptionalNullable[str]*                                    | :heavy_minus_sign:                                         | N/A                                                        |                                                            |
