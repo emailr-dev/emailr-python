@@ -28,3 +28,9 @@ class DomainDNSRecords(BaseModel):
     mail_from_spf: Annotated[DNSRecord, pydantic.Field(alias="mailFromSpf")]
 
     receiving_mx: Annotated[DNSRecord, pydantic.Field(alias="receivingMx")]
+
+
+try:
+    DomainDNSRecords.model_rebuild()
+except NameError:
+    pass

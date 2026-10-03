@@ -2,10 +2,10 @@
 
 from __future__ import annotations
 from datetime import datetime
-from emailr.types import BaseModel, Nullable, UNSET_SENTINEL
+from emailr.types import BaseModel, Nullable, OptionalNullable, UNSET, UNSET_SENTINEL
 from pydantic import model_serializer
 from typing import Any, Dict, List
-from typing_extensions import TypedDict
+from typing_extensions import NotRequired, TypedDict
 
 
 class EmailTypedDict(TypedDict):
@@ -21,19 +21,22 @@ class EmailTypedDict(TypedDict):
     status: str
     ses_message_id: Nullable[str]
     broadcast_id: Nullable[str]
-    metadata: Nullable[Dict[str, Nullable[Any]]]
+    metadata: Nullable[Dict[str, Any]]
     sent_at: Nullable[datetime]
     delivered_at: Nullable[datetime]
     opened_at: Nullable[datetime]
     clicked_at: Nullable[datetime]
     bounced_at: Nullable[datetime]
     complained_at: Nullable[datetime]
+    scheduled_at: Nullable[datetime]
     created_at: datetime
     thread_id: Nullable[str]
     parent_email_id: Nullable[str]
-    attachments: Nullable[List[Nullable[Any]]]
-    clicked_links: Nullable[List[Nullable[Any]]]
-    opens: Nullable[List[Nullable[Any]]]
+    attachments: Nullable[List[Any]]
+    clicked_links: Nullable[List[Any]]
+    opens: Nullable[List[Any]]
+    workspace_id: NotRequired[Nullable[str]]
+    r"""Owning domain workspace. Null only for archived legacy records."""
 
 
 class Email(BaseModel):
@@ -61,7 +64,7 @@ class Email(BaseModel):
 
     broadcast_id: Nullable[str]
 
-    metadata: Nullable[Dict[str, Nullable[Any]]]
+    metadata: Nullable[Dict[str, Any]]
 
     sent_at: Nullable[datetime]
 
@@ -75,63 +78,67 @@ class Email(BaseModel):
 
     complained_at: Nullable[datetime]
 
+    scheduled_at: Nullable[datetime]
+
     created_at: datetime
 
     thread_id: Nullable[str]
 
     parent_email_id: Nullable[str]
 
-    attachments: Nullable[List[Nullable[Any]]]
+    attachments: Nullable[List[Any]]
 
-    clicked_links: Nullable[List[Nullable[Any]]]
+    clicked_links: Nullable[List[Any]]
 
-    opens: Nullable[List[Nullable[Any]]]
+    opens: Nullable[List[Any]]
+
+    workspace_id: OptionalNullable[str] = UNSET
+    r"""Owning domain workspace. Null only for archived legacy records."""
 
     @model_serializer(mode="wrap")
     def serialize_model(self, handler):
-        optional_fields = []
-        nullable_fields = [
-            "subject",
-            "html_content",
-            "text_content",
-            "template_id",
-            "ses_message_id",
-            "broadcast_id",
-            "metadata",
-            "sent_at",
-            "delivered_at",
-            "opened_at",
-            "clicked_at",
-            "bounced_at",
-            "complained_at",
-            "thread_id",
-            "parent_email_id",
-            "attachments",
-            "clicked_links",
-            "opens",
-        ]
-        null_default_fields = []
-
+        optional_fields = set(["workspace_id"])
+        nullable_fields = set(
+            [
+                "workspace_id",
+                "subject",
+                "html_content",
+                "text_content",
+                "template_id",
+                "ses_message_id",
+                "broadcast_id",
+                "metadata",
+                "sent_at",
+                "delivered_at",
+                "opened_at",
+                "clicked_at",
+                "bounced_at",
+                "complained_at",
+                "scheduled_at",
+                "thread_id",
+                "parent_email_id",
+                "attachments",
+                "clicked_links",
+                "opens",
+            ]
+        )
         serialized = handler(self)
-
         m = {}
 
         for n, f in type(self).model_fields.items():
             k = f.alias or n
-            val = serialized.get(k)
-            serialized.pop(k, None)
+            val = serialized.get(k, serialized.get(n))
+            is_nullable_and_explicitly_set = (
+                k in nullable_fields
+                and (self.__pydantic_fields_set__.intersection({n}))  # pylint: disable=no-member
+            )
 
-            optional_nullable = k in optional_fields and k in nullable_fields
-            is_set = (
-                self.__pydantic_fields_set__.intersection({n})
-                or k in null_default_fields
-            )  # pylint: disable=no-member
-
-            if val is not None and val != UNSET_SENTINEL:
-                m[k] = val
-            elif val != UNSET_SENTINEL and (
-                not k in optional_fields or (optional_nullable and is_set)
-            ):
-                m[k] = val
+            if val != UNSET_SENTINEL:
+                if (
+                    val is not None
+                    or k not in optional_fields
+                    or is_nullable_and_explicitly_set
+                ):
+                    m[k] = val
 
         return m
