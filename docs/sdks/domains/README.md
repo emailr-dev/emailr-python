@@ -10,8 +10,10 @@ Domain verification and management
 * [list](#list) - List domains
 * [verify](#verify) - Verify domain
 * [get_dns_status](#get_dns_status) - Get DNS status
+* [get_domain](#get_domain) - Get domain
 * [update](#update) - Update domain
 * [delete](#delete) - Delete domain
+* [sign_domain_connect](#sign_domain_connect) - Generate signed Domain Connect URL
 
 ## add
 
@@ -53,6 +55,7 @@ with Emailr(
 
 | Error Type                | Status Code               | Content Type              |
 | ------------------------- | ------------------------- | ------------------------- |
+| errors.Error              | 400                       | application/json          |
 | errors.Error              | 500                       | application/json          |
 | errors.EmailrDefaultError | 4XX, 5XX                  | \*/\*                     |
 
@@ -178,6 +181,47 @@ with Emailr(
 | errors.Error              | 404                       | application/json          |
 | errors.EmailrDefaultError | 4XX, 5XX                  | \*/\*                     |
 
+## get_domain
+
+Get a specific domain by ID
+
+### Example Usage
+
+<!-- UsageSnippet language="python" operationID="getDomain" method="get" path="/v1/domains/{id}" -->
+```python
+from emailr import Emailr
+import os
+
+
+with Emailr(
+    bearer_auth=os.getenv("EMAILR_BEARER_AUTH", ""),
+) as e_client:
+
+    res = e_client.domains.get_domain(id="123e4567-e89b-12d3-a456-426614174000")
+
+    # Handle response
+    print(res)
+
+```
+
+### Parameters
+
+| Parameter                                                           | Type                                                                | Required                                                            | Description                                                         | Example                                                             |
+| ------------------------------------------------------------------- | ------------------------------------------------------------------- | ------------------------------------------------------------------- | ------------------------------------------------------------------- | ------------------------------------------------------------------- |
+| `id`                                                                | *str*                                                               | :heavy_check_mark:                                                  | N/A                                                                 | 123e4567-e89b-12d3-a456-426614174000                                |
+| `retries`                                                           | [Optional[utils.RetryConfig]](../../models/utils/retryconfig.md)    | :heavy_minus_sign:                                                  | Configuration to override the default retry behavior of the client. |                                                                     |
+
+### Response
+
+**[models.Domain](../../models/domain.md)**
+
+### Errors
+
+| Error Type                | Status Code               | Content Type              |
+| ------------------------- | ------------------------- | ------------------------- |
+| errors.Error              | 404                       | application/json          |
+| errors.EmailrDefaultError | 4XX, 5XX                  | \*/\*                     |
+
 ## update
 
 Update domain settings
@@ -203,11 +247,12 @@ with Emailr(
 
 ### Parameters
 
-| Parameter                                                           | Type                                                                | Required                                                            | Description                                                         | Example                                                             |
-| ------------------------------------------------------------------- | ------------------------------------------------------------------- | ------------------------------------------------------------------- | ------------------------------------------------------------------- | ------------------------------------------------------------------- |
-| `id`                                                                | *str*                                                               | :heavy_check_mark:                                                  | N/A                                                                 | 123e4567-e89b-12d3-a456-426614174000                                |
-| `receiving_enabled`                                                 | *Optional[bool]*                                                    | :heavy_minus_sign:                                                  | N/A                                                                 | true                                                                |
-| `retries`                                                           | [Optional[utils.RetryConfig]](../../models/utils/retryconfig.md)    | :heavy_minus_sign:                                                  | Configuration to override the default retry behavior of the client. |                                                                     |
+| Parameter                                                                                                                                 | Type                                                                                                                                      | Required                                                                                                                                  | Description                                                                                                                               | Example                                                                                                                                   |
+| ----------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------- |
+| `id`                                                                                                                                      | *str*                                                                                                                                     | :heavy_check_mark:                                                                                                                        | N/A                                                                                                                                       | 123e4567-e89b-12d3-a456-426614174000                                                                                                      |
+| `receiving_enabled`                                                                                                                       | *Optional[bool]*                                                                                                                          | :heavy_minus_sign:                                                                                                                        | N/A                                                                                                                                       | true                                                                                                                                      |
+| `receiving_subdomain`                                                                                                                     | [Optional[models.UpdateDomainRequestReceivingSubdomain]](../../models/updatedomainrequestreceivingsubdomain.md)                           | :heavy_minus_sign:                                                                                                                        | Choose mail for subdomain receiving or @ for root; existing mail domains retain mail as a legacy receiving alias after switching to root. |                                                                                                                                           |
+| `retries`                                                                                                                                 | [Optional[utils.RetryConfig]](../../models/utils/retryconfig.md)                                                                          | :heavy_minus_sign:                                                                                                                        | Configuration to override the default retry behavior of the client.                                                                       |                                                                                                                                           |
 
 ### Response
 
@@ -260,5 +305,53 @@ with Emailr(
 | Error Type                | Status Code               | Content Type              |
 | ------------------------- | ------------------------- | ------------------------- |
 | errors.Error              | 404                       | application/json          |
+| errors.Error              | 500                       | application/json          |
+| errors.EmailrDefaultError | 4XX, 5XX                  | \*/\*                     |
+
+## sign_domain_connect
+
+Discover Domain Connect support and generate a signed apply URL for one-click DNS setup
+
+### Example Usage
+
+<!-- UsageSnippet language="python" operationID="signDomainConnect" method="post" path="/v1/domains/domainconnect/sign" -->
+```python
+from emailr import Emailr
+import os
+
+
+with Emailr(
+    bearer_auth=os.getenv("EMAILR_BEARER_AUTH", ""),
+) as e_client:
+
+    res = e_client.domains.sign_domain_connect(request={
+        "domain": "example.com",
+        "service_id": "send",
+        "params": {
+            "region": "us-west-2",
+        },
+    })
+
+    # Handle response
+    print(res)
+
+```
+
+### Parameters
+
+| Parameter                                                                   | Type                                                                        | Required                                                                    | Description                                                                 |
+| --------------------------------------------------------------------------- | --------------------------------------------------------------------------- | --------------------------------------------------------------------------- | --------------------------------------------------------------------------- |
+| `request`                                                                   | [models.DomainConnectSignRequest](../../models/domainconnectsignrequest.md) | :heavy_check_mark:                                                          | The request object to use for the request.                                  |
+| `retries`                                                                   | [Optional[utils.RetryConfig]](../../models/utils/retryconfig.md)            | :heavy_minus_sign:                                                          | Configuration to override the default retry behavior of the client.         |
+
+### Response
+
+**[models.DomainConnectSignResponse](../../models/domainconnectsignresponse.md)**
+
+### Errors
+
+| Error Type                | Status Code               | Content Type              |
+| ------------------------- | ------------------------- | ------------------------- |
+| errors.Error              | 400, 404                  | application/json          |
 | errors.Error              | 500                       | application/json          |
 | errors.EmailrDefaultError | 4XX, 5XX                  | \*/\*                     |
