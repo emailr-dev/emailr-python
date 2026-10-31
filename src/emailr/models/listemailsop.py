@@ -2,8 +2,14 @@
 
 from __future__ import annotations
 from .email import Email, EmailTypedDict
-from emailr.types import BaseModel
+from emailr.types import (
+    BaseModel,
+    UNSET_SENTINEL,
+    current_exclude_none,
+    serialize_with_info,
+)
 from emailr.utils import FieldMetadata, QueryParamMetadata
+from pydantic import model_serializer
 from typing import List, Optional
 from typing_extensions import Annotated, NotRequired, TypedDict
 
@@ -11,6 +17,12 @@ from typing_extensions import Annotated, NotRequired, TypedDict
 class ListEmailsRequestTypedDict(TypedDict):
     page: NotRequired[str]
     limit: NotRequired[str]
+    email: NotRequired[str]
+    broadcast_id: NotRequired[str]
+    email_id: NotRequired[str]
+    domain: NotRequired[str]
+    template_id: NotRequired[str]
+    status: NotRequired[str]
 
 
 class ListEmailsRequest(BaseModel):
@@ -24,15 +36,78 @@ class ListEmailsRequest(BaseModel):
         FieldMetadata(query=QueryParamMetadata(style="form", explode=True)),
     ] = "50"
 
+    email: Annotated[
+        Optional[str],
+        FieldMetadata(query=QueryParamMetadata(style="form", explode=True)),
+    ] = None
 
-class PaginationTypedDict(TypedDict):
+    broadcast_id: Annotated[
+        Optional[str],
+        FieldMetadata(query=QueryParamMetadata(style="form", explode=True)),
+    ] = None
+
+    email_id: Annotated[
+        Optional[str],
+        FieldMetadata(query=QueryParamMetadata(style="form", explode=True)),
+    ] = None
+
+    domain: Annotated[
+        Optional[str],
+        FieldMetadata(query=QueryParamMetadata(style="form", explode=True)),
+    ] = None
+
+    template_id: Annotated[
+        Optional[str],
+        FieldMetadata(query=QueryParamMetadata(style="form", explode=True)),
+    ] = None
+
+    status: Annotated[
+        Optional[str],
+        FieldMetadata(query=QueryParamMetadata(style="form", explode=True)),
+    ] = None
+
+    @model_serializer(mode="wrap")
+    def _serialize_model_with_info(self, handler, info):
+        return serialize_with_info(self.serialize_model, handler, info)
+
+    def serialize_model(self, handler):
+        optional_fields = set(
+            [
+                "page",
+                "limit",
+                "email",
+                "broadcast_id",
+                "email_id",
+                "domain",
+                "template_id",
+                "status",
+            ]
+        )
+        exclude_none = current_exclude_none()
+        serialized = handler(self)
+        m = {}
+
+        for n, f in type(self).model_fields.items():
+            k = f.alias if f.alias is not None else n
+            if k not in serialized and n not in serialized and exclude_none is False:
+                continue
+            val = serialized.get(k, serialized.get(n))
+
+            if val != UNSET_SENTINEL:
+                if val is not None or k not in optional_fields:
+                    m[k] = val
+
+        return m
+
+
+class ListEmailsPaginationTypedDict(TypedDict):
     page: int
     limit: int
     total: int
     pages: int
 
 
-class Pagination(BaseModel):
+class ListEmailsPagination(BaseModel):
     page: int
 
     limit: int
@@ -46,7 +121,7 @@ class ListEmailsResponseTypedDict(TypedDict):
     r"""List of emails with pagination"""
 
     data: List[EmailTypedDict]
-    pagination: PaginationTypedDict
+    pagination: ListEmailsPaginationTypedDict
 
 
 class ListEmailsResponse(BaseModel):
@@ -54,4 +129,4 @@ class ListEmailsResponse(BaseModel):
 
     data: List[Email]
 
-    pagination: Pagination
+    pagination: ListEmailsPagination
