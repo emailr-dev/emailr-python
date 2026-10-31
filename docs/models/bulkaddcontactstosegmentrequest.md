@@ -1,0 +1,9 @@
+# BulkAddContactsToSegmentRequest
+
+
+## Fields
+
+| Field                                                                              | Type                                                                               | Required                                                                           | Description                                                                        | Example                                                                            |
+| ---------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------- |
+| `contact_ids`                                                                      | List[*str*]                                                                        | :heavy_minus_sign:                                                                 | Array of contact IDs to add to the segment                                         | [<br/>"123e4567-e89b-12d3-a456-426614174000",<br/>"223e4567-e89b-12d3-a456-426614174001"<br/>] |
+| `emails`                                                                           | List[*str*]                                                                        | :heavy_minus_sign:                                                                 | Array of email addresses to add to the segment (will be looked up in contacts)     | [<br/>"user1@example.com",<br/>"user2@example.com"<br/>]                           |
