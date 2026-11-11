@@ -7,13 +7,27 @@ from typing_extensions import TypedDict
 
 class SendBroadcastResponseTypedDict(TypedDict):
     success: bool
-    sent: int
+    queued: int
+    r"""Number of emails successfully queued for sending"""
     total: int
+    r"""Total number of eligible recipients after filtering"""
+    excluded: int
+    r"""Count of contacts excluded due to unsubscriptions (global or topic-specific)"""
+    status: str
+    r"""Current status of the broadcast send operation"""
 
 
 class SendBroadcastResponse(BaseModel):
     success: bool
 
-    sent: int
+    queued: int
+    r"""Number of emails successfully queued for sending"""
 
     total: int
+    r"""Total number of eligible recipients after filtering"""
+
+    excluded: int
+    r"""Count of contacts excluded due to unsubscriptions (global or topic-specific)"""
+
+    status: str
+    r"""Current status of the broadcast send operation"""

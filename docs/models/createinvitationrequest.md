@@ -1,0 +1,9 @@
+# CreateInvitationRequest
+
+
+## Fields
+
+| Field                                                                                    | Type                                                                                     | Required                                                                                 | Description                                                                              | Example                                                                                  |
+| ---------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------- |
+| `email`                                                                                  | *str*                                                                                    | :heavy_check_mark:                                                                       | Email address of the person to invite                                                    | colleague@example.com                                                                    |
+| `role`                                                                                   | [Optional[models.CreateInvitationRequestRole]](../models/createinvitationrequestrole.md) | :heavy_minus_sign:                                                                       | N/A                                                                                      | member                                                                                   |
