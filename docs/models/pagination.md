@@ -5,7 +5,7 @@
 
 | Field              | Type               | Required           | Description        |
 | ------------------ | ------------------ | ------------------ | ------------------ |
-| `page`             | *int*              | :heavy_check_mark: | N/A                |
-| `limit`            | *int*              | :heavy_check_mark: | N/A                |
-| `total`            | *int*              | :heavy_check_mark: | N/A                |
-| `pages`            | *int*              | :heavy_check_mark: | N/A                |
+| `page`             | *float*            | :heavy_check_mark: | N/A                |
+| `limit`            | *float*            | :heavy_check_mark: | N/A                |
+| `total`            | *float*            | :heavy_check_mark: | N/A                |
+| `pages`            | *float*            | :heavy_check_mark: | N/A                |
